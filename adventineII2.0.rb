@@ -383,7 +383,7 @@ class Processing #write .test
 				@mroom.move("Intersection")
 				when "Intersection"
 				@mroom.move("")
-				when "South Room"
+				when "South Wall"
 				@mroom.move("Cavern")
 				end
 			when "south" #or "s"
