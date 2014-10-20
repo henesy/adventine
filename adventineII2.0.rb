@@ -10,7 +10,7 @@
 # 2.2.1: all 1g rooms, medium dialogue
 # 2.2.2: user creation dialogue (kinda)
 # 2.2.3: added stuff for use + combat + inventory + stats; +EFE
-# 
+# 2.2.4: added EFE interaction, wolf, and patched some bugs
 #
 # ----------Braining----------
 # Rooms: Cavern, South Wall, Intersection, East Forest Edge
@@ -21,7 +21,11 @@
 # • class dynamics of some sort 
 # • interactive items
 # • limited inventory (use `each` loops)
+# • Spellbook
 #
+# ----
+# Room addition steps:
+# Movement case in Processing -> Room def -> room.move case
 
 $room = "Cavern"
 $sneakstate = 0
@@ -32,7 +36,7 @@ $stats = {} #hashes fuck yeah
 # Warrior, Thief, Wizard
 $inventory = {} #more..hashes? maybe? sleep on this one
 $fresh = 0
-$class = ""
+$class = 0
 $engaged = 0
 
 #enemies block  # use $enemies.sample
@@ -47,6 +51,19 @@ $enemies[6] = "Donkey"
 $enemies[7] = "Friday Tests"
 $enemies[8] = "Rabid Squirrel"
 $enemies[9] = "Grue"
+$enemies[10] = "Harpy"
+#enemy state block #see above for number refs
+$enemystate = [10]
+$enemystate[0] = 1
+$enemystate[1] = 1
+$enemystate[2] = 1
+$enemystate[3] = 1
+$enemystate[4] = 1
+$enemystate[5] = 1
+$enemystate[6] = 1
+$enemystate[7] = 1
+$enemystate[8] = 1
+$enemystate[9] = 1
 
 #loot block
 $madloot = [10]
@@ -59,13 +76,23 @@ $madloot[6] = "Uranium (235)"
 $madloot[7] = "Pearl"
 $madloot[8] = "Emerald"
 $madloot[9] = "Ruby"
+$madloot[10] = "Knucklebone"
 
 $ididitagain = 0 # :P
 
+$taunts = [4]
+$taunts[0] = "You scream a profanity"
+$taunts[1] = "You raise a hand in an offensive manner"
+$taunts[2] = "@#!^$&#@#!&)!%@$"
+$taunts[3] = "You beckon with your hand"
+$taunts[4] = "You throw some dirt"
+
+
 def newuser() # user creation  #REWRITE AND PROCESS FFS # I DID IT 
-	system 'clear'
+	
 	if $ididitagain == 0
-		puts "Welcome to the world of Adventine!"
+		system 'clear'
+		puts "Welcome to the world of Adventine!"	
 	else
 	end
 	print "What is your name?: "
@@ -105,21 +132,27 @@ def combatdialogue() #combatdialogue() is called by combat.dialogue
 					 ### recursive calls are so stupid
 	print """
 	[0] Do nothing
-	[1] Assault
+	[1] Engage
 	[2] Taunt
-	[3]	Dodge
+	[3]	Use an item
 	[4] Run Away
 	"""
 	print "\n: "
 	input = $stdin.gets.chomp
-	return input
+	if input < 5 && input >= 0
+		return input
+	else
+		puts "That's not an option..."
+		combatdialogue()
+	end
 end
 
-def helpwords()  ### add `inventory` and `class`
+def helpwords()  ### add `inventory` and `class` and `spellbook`
 	puts """
 	help - show this list
 	inventory - show inventory 
 	class - show class details
+	spellbook - manage spellbook
 	north - move north
 	east - move east
 	south - move south
@@ -131,6 +164,8 @@ def helpwords()  ### add `inventory` and `class`
 	"""
 end
 
+#class Inventory
+#end
 
 def quitdialogue()
 	print "Are you sure you want to quit?[y/n]: "
@@ -151,6 +186,23 @@ def prompt()
 	return input
 end
 
+def mclass(request)
+	if $class == 1 #warrior
+		puts """
+		You are a Warrior
+		"""
+	elsif $class == 2 #thief
+		puts """
+		You are a Thief
+		"""
+	elsif $class == 3 #wizard
+		puts """
+		You are a Wizard
+		""" #harry
+	else
+	end
+end
+
 class Creeps #the beasties
 
 	def bear
@@ -159,6 +211,13 @@ class Creeps #the beasties
 	def wolf
 		puts "A wolf suddenly appears!"
 		newthing = combatdialogue()
+		if newthing == 0
+		elsif newthing == 1
+		elsif newthing == 2
+		elsif newthing == 3
+		elsif newthing == 4
+		else
+		end
 	end
 	
 	def will
@@ -206,6 +265,10 @@ class Use  #inventory processing
 	
 	def room # room...specifics? case structures? ew....
 	end
+	
+	def spellbook
+	end
+	
 end
 
 class Room
@@ -230,6 +293,8 @@ class Room
 			mroom.southwall()
 		when "Darkness"
 			mroom.darkness()
+		when "East Forest Edge"
+			mroom.eastforestedge()
 		else
 		puts "You can't move there!"
 		roombleh = $room
@@ -307,11 +372,14 @@ class Room
 		puts "You feel your body grow colder and colder..."
 		puts "Darkness overtakes you"
 		puts """
-		                   ---Game Over---
+		           ---Game Over---
 		"""
-		print "Try again? [y/n]"
-		input = prompt()
+		print "Try again? [y/n]: "
+		input = $stdin.gets.chomp.downcase
 		if input == "y"
+		start()
+		$fresh = 0
+		elsif input == "yes"
 		start()
 		$fresh = 0
 		else
@@ -339,6 +407,10 @@ class Room
 	
 	def eastforestedge() # interact with wolf! :DD
 						 ## DAMMIT I HAVE TO UPDATE EVERYTHING
+		$room = "East Forest Edge"
+		puts "A tall wall of trees lies before you"
+		puts "There is a small gap in the trees to pass through"
+		
 	end
 end
 
@@ -373,6 +445,8 @@ class Processing #write .test
 			sneaking()
 			when "use"
 			@muse.prompt()
+			when "class"
+			mclass($class) #maybe rework later with 'retrieve'?
 			when "y"
 			print ""
 			#when "n"
@@ -385,6 +459,8 @@ class Processing #write .test
 				@mroom.move("")
 				when "South Wall"
 				@mroom.move("Cavern")
+				when "East Forest Edge"
+				@mroom.move("Small Clearing")
 				end
 			when "south" #or "s"
 				case myroom
@@ -392,20 +468,26 @@ class Processing #write .test
 				@mroom.move("Cavern")
 				when "Cavern"
 				@mroom.move("South Wall")
+				when "East Forest Edge"
+				@mroom.move("")
 				end
 			when "east" #or "e"
 				case myroom
 				when "Cavern"
 				@mroom.move("Darkness")
 				when "Intersection"
-				@mroom.move("")
+				@mroom.move("East Forest Edge")
 				when "South Wall"
+				@mroom.move("")
+				when "East Forest Edge"
 				@mroom.move("")
 				end
 			when "west" #or "w"
 				case myroom
 				when "Cavern"
 				@mroom.move("Darkness")
+				when "East Forest Edge"
+				@mroom.move("Intersection")
 				end
 			else
 			puts "\npardon me?\n\n" #need to catch and restart room
