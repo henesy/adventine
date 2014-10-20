@@ -209,9 +209,11 @@ class Creeps #the beasties
 	end
 	
 	def wolf
+		@combats = Combat.new()
 		puts "A wolf suddenly appears!"
 		newthing = combatdialogue()
 		if newthing == 0
+			
 		elsif newthing == 1
 		elsif newthing == 2
 		elsif newthing == 3
@@ -564,11 +566,13 @@ class Combat  #check combatdialogue
 	def flee
 	end
 	
-	def talk
+	def taunt
+		puts "#{$taunt.sample}"
 	end
 	
 	def fight
 	end
+	
 	
 	def cspecial
 	end
