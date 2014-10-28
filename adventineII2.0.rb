@@ -30,8 +30,8 @@
 # • interactive items
 # • limited inventory (use `each` loops)
 # • color code output!
+# • levelling/stat increase XP build regular check system?
 #
-
 # -------- # Begin Global Variables # -------- #
 
 $room = "Cavern"
@@ -41,9 +41,19 @@ $points_spent = 0
 $points_total = 5 #points...?
 $sneakstate = 0
 $tate = 1
-$userprofile = {'name' => 'none', 'state' => $tate, 'class' => $pclass}
+$userprofile = {
+	'name' => 'none',
+	'state' => $tate,
+	'class' => $pclass
+	}
 # just a note, hashes are defined with {} and called with []  :)
-$stats = {'damage_bonus' => 0, 'luck' => 0, 'mana' => 0, 'defense_bonus' => 0} #hashes fuck yeah
+$stats = {
+	'damage_bonus' => 0,
+	'luck' => 0,
+	'mana' => 0,
+	'defense_bonus' => 0
+	} #hashes fuck yeah
+
 # classes:
 # Warrior, Thief, Wizard
 $inventory = {} #more..hashes? maybe? sleep on this one
@@ -63,6 +73,21 @@ $enemies[6] = "Donkey"
 $enemies[7] = "Friday Tests"
 $enemies[8] = "Rabid Squirrel"
 $enemies[9] = "Grue"
+#--
+$estate = { #THIS NEW FORMAT THO
+	"Bear" => 1,
+	"Wolf" => 1,
+	"Will" => 1,
+	"" => 1,
+	"" => 1,
+	"Rabbit" => 1,
+	"Donkey" => 1,
+	"Friday Tests" => 1,
+	"Rabid Squirrel" => 1,
+	"Grue" => 1,
+}
+
+$east_wolf = 1
 
 #loot block
 $madloot = [10]
@@ -208,8 +233,14 @@ def combatdialogue() #combatdialogue() is called by combat.dialogue
 	[4] Run Away
 	"""
 	print "\n: "
-	input = $stdin.gets.chomp
-	return input
+	input = $stdin.gets.chomp.to_i
+	if input > -1 && input <5
+		return input
+	else
+		puts "That's not an option."
+		combatdialogue()
+	end
+	#return input
 end
 
 def helpwords()  ### add `inventory` and `class`
@@ -257,10 +288,51 @@ class Creeps #the beasties
 	def bear
 	end
 
-	def wolf
-		puts "A wolf suddenly appears!"
-		newthing = combatdialogue()
+	class Wolf
+		def initialize()
+				@hp = 5
+				@dfs = 1
+				@atk = 1
+				@mna = 0
+				@lck = 0
+		end
+
+		def engage() #if and stuff
+			puts "\nA vicious wolf suddenly appears!"
+			@fighting = 1
+			newthing = combatdialogue()
+			case newthing
+			when 0
+			when 1
+			when 2
+			when 3
+			when 4
+			end
+		end
 	end
+	# def wolf() #migrate to class structure with Creeps::wolf.attack etc
+	# 	# standard style init
+	# 	hp = 5
+	# 	dfs = 1
+	# 	atk = 1
+	# 	mna = 0
+	# 	lck = 0
+	# 	#[0] Do nothing #reference
+	# 	#[1] Assault
+	# 	#[2] Taunt
+	# 	#[3]	Dodge
+	# 	#[4] Run Away
+	# 	puts "A vicious wolf suddenly appears!"
+	# 	newthing = combatdialogue()
+	# 	case newthing
+	# 	when 0
+	#
+	# 	when 1
+	# 	when 2
+	# 	when 3
+	# 	when 4
+	# 	end
+	# end
 
 	def will
 	end
@@ -445,9 +517,18 @@ class Room
 
 	def eastforestedge() # interact with wolf! :DD
 						$room = "East Forest Edge"
+						mcreep = Creeps::Wolf.new()
 						## DAMMIT I HAVE TO UPDATE EVERYTHING
-						puts "Welcome to the East Forest Edge!"
+						puts "Tall trees tower over you"
+						#puts "#{$estate['Wolf']}" #testing hash format
+						if $east_wolf == 1
+							#puts "A vicious wolf appears!" #migrated to creeps
+							$engaged = 1
+							mcreep.engage()
+						else
+						end
 						input = prompt() #NEVER FORGETTI
+
 	end
 end #class end
 
