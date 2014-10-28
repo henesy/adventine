@@ -4,9 +4,11 @@
 #require "./adv2rooms.rb"  #classes are cool
 #
 # Expansions can be added through:
-# require "/path/to/expansion.rb"
+# require "/path/to/expansion.rb" #modules temporarily removed
 #
 ### Written by Sean Hinchee
+### Adventine is a project started and operated by Sean Hinchee
+### Adventine was originally created as a programming class project
 #
 #
 # v2.2.4
