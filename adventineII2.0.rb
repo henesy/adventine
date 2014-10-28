@@ -31,6 +31,8 @@
 # • color code output!
 #
 
+# -------- # Begin Global Variables # -------- #
+
 $room = "Cavern"
 $fudged = 0
 $points = 5
@@ -74,6 +76,8 @@ $madloot[8] = "Emerald"
 $madloot[9] = "Ruby"
 
 $ididitagain = 0 # :P
+
+# -------- # End Global Variables # -------- #
 
 def classprocessing(choice)
 	classname = $pclass #(make this global?)
@@ -160,10 +164,10 @@ def newuser() # user creation  #REWRITE AND PROCESS FFS # I DID IT
 	newclassthing = $stdin.gets.chomp.to_i
 	if newclassthing < 4 && newclassthing > 0
 		$pclass = newclassthing #stahf
-		print "Do you want to choose your stats? [y/n]: " ""
+		print "Do you want to choose your stats? [y/n]: "
 		resultm = $stdin.gets.chomp.downcase
 		if resultm == "yes"
-			resultm = "y" #useless now
+			#resultm = "y" #useless now
 			classprocessing(1)
 		elsif resultm == "y"
 			classprocessing(1)
@@ -171,7 +175,7 @@ def newuser() # user creation  #REWRITE AND PROCESS FFS # I DID IT
 			puts ""
 			classprocessing(0)
 		end
-		classprocessing($pclass)
+		#classprocessing($pclass) #wtf?
 	else
 		puts "Let's try this again...\n"
 		maybeidid = 1
@@ -239,11 +243,13 @@ def prompt()
 	@processing = Processing.new()
 	print "\e[31m\n\"#{$room}\"\e[92m>\e[36m "
 	input = $stdin.gets.chomp.downcase
-#	input2 = input.split  #nope.
+ #	input2 = input.split  #nope.
 	@processing.test(input)
 	print "\e[37m" #default reset?
 	return input
 end
+
+# -------- # End Global Def's / Begin Classes # -------- #
 
 class Creeps #the beasties
 
@@ -303,6 +309,7 @@ class Use  #inventory processing
 end
 
 class Room
+
 	def initialize()  #run at .new() #unnecessary
 #		@initiated = initiated
 		@processing = Processing.new()
@@ -324,8 +331,10 @@ class Room
 			mroom.southwall()
 		when "Darkness"
 			mroom.darkness()
+		when "East Forest Edge"
+			mroom.eastforestedge()
 		else
-		puts "You can't move there!"
+		puts "You can't move there!\n\n"
 		roombleh = $room
 		case roombleh
 		when "Cavern"
@@ -334,6 +343,8 @@ class Room
 		mroom.northlight()
 		when "South Wall"
 		mroom.southwall()
+		when "East Forest Edge"
+			mroom.eastforestedge()
 		else
 		prompt()
 		end # case end
@@ -432,9 +443,13 @@ class Room
 	end
 
 	def eastforestedge() # interact with wolf! :DD
-						 ## DAMMIT I HAVE TO UPDATE EVERYTHING
+						$room = "East Forest Edge"
+						## DAMMIT I HAVE TO UPDATE EVERYTHING
+						puts "Welcome to the East Forest Edge!"
+						input = prompt() #NEVER FORGETTI
 	end
-end
+end #class end
+
 
 class Processing #write .test
 	def test(words) #edit
@@ -472,35 +487,50 @@ class Processing #write .test
 			#when "n"
 			#print ""
 			when "north" #or "n"
-				case myroom
+				case $room
 				when "Cavern"
-				@mroom.move("Intersection")
+					@mroom.move("Intersection")
 				when "Intersection"
-				@mroom.move("")
+					@mroom.move("")
 				when "South Room"
-				@mroom.move("Cavern")
+					@mroom.move("Cavern")
+				when "East Forest Edge"
+					@mroom.move("")
 				end
 			when "south" #or "s"
-				case myroom
+				case $room
 				when "Intersection"
-				@mroom.move("Cavern")
+					@mroom.move("Cavern")
 				when "Cavern"
-				@mroom.move("South Wall")
+					@mroom.move("South Wall")
+				when "East Forest Edge"
+					@mroom.move("")
+				when "South Wall"
+					@mroom.move("")
 				end
 			when "east" #or "e"
-				case myroom
+				case $room
 				when "Cavern"
-				@mroom.move("Darkness")
+					@mroom.move("Darkness")
 				when "Intersection"
-				@mroom.move("")
+					@mroom.move("")
 				when "South Wall"
-				@mroom.move("")
+					@mroom.move("")
+				when "East Forest Edge"
+					@mroom.move("Intersection")
 				end
 			when "west" #or "w"
-				case myroom
+				case $room #trying this
 				when "Cavern"
-				@mroom.move("Darkness")
-				end
+					@mroom.move("Darkness")
+				when "Intersection"
+					@mroom.move("East Forest Edge")
+				when "South Wall"
+					@mroom.move("")
+				when "East Forest Edge"
+					@mroom.move("")
+				#break
+			end
 			else
 			puts "\npardon me?\n\n" #need to catch and restart room
 				case myroom
@@ -510,6 +540,8 @@ class Processing #write .test
 				@mroom.northlight()
 				when "South Wall"
 				@mroom.southwall()
+				when "East Forest Edge"
+				@mroom.eastforestedge()
 				else
 				puts "\npardon me?\n\n"
 				end
