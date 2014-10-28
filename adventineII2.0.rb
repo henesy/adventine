@@ -11,13 +11,14 @@
 ### Adventine was originally created as a programming class project
 #
 #
-# v2.2.4
+# v2.2.6
 # 2.2.0: north room, basic dialogue
 # 2.2.1: all 1g rooms, medium dialogue
 # 2.2.2: user creation dialogue (kinda)
 # 2.2.3: added stuff for use + combat + inventory + stats; +EFE
 # 2.2.4: added class dialogue (expanded)
 # 2.2.5: added COLORS!!!!!
+# 2.2.6: bugfixes, cleared up code for moving, minor rebuild of stats
 #
 # ----------Braining----------
 # Rooms: Cavern, South Wall, Intersection, East Forest Edge
