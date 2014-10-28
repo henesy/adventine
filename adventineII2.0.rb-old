@@ -5,41 +5,38 @@
 #
 ### Written by Sean Hinchee
 #
-# v2.2.4
+# v2.2.3
 # 2.2.0: north room, basic dialogue
 # 2.2.1: all 1g rooms, medium dialogue
 # 2.2.2: user creation dialogue (kinda)
 # 2.2.3: added stuff for use + combat + inventory + stats; +EFE
-# 2.2.4: added class dialogue (expanded)
-# 2.2.5: added COLORS!!!!!
+# 2.2.4: added EFE interaction, wolf, and patched some bugs
 #
 # ----------Braining----------
 # Rooms: Cavern, South Wall, Intersection, East Forest Edge
 #
 # Ideas: item dropping, static objects in general
-# • implementing a real class structure (working on that)
+# • implementing a real class structure
 # • word processing (hah)
-# • class dynamics of some sort (working on that)
+# • class dynamics of some sort 
 # • interactive items
 # • limited inventory (use `each` loops)
-# • color code output!
+# • Spellbook
 #
+# ----
+# Room addition steps:
+# Movement case in Processing -> Room def -> room.move case
 
 $room = "Cavern"
-$fudged = 0
-$points = 5
-$points_spent = 0
-$points_total = 5 #points...?
 $sneakstate = 0
 $tate = 1
-$userprofile = {'name' => 'none', 'state' => $tate, 'class' => $pclass}
-# just a note, hashes are defined with {} and called with []  :)
-$stats = {'damage_bonus' => 0, 'luck' => 0, 'mana' => 0, 'defense_bonus' => 0} #hashes fuck yeah
+$userprofile = {'name' => 'none', 'state' => $tate, 'class' => $class} 
+$stats = {} #hashes fuck yeah
 # classes:
 # Warrior, Thief, Wizard
 $inventory = {} #more..hashes? maybe? sleep on this one
 $fresh = 0
-$pclass = ""
+$class = 0
 $engaged = 0
 
 #enemies block  # use $enemies.sample
@@ -54,6 +51,19 @@ $enemies[6] = "Donkey"
 $enemies[7] = "Friday Tests"
 $enemies[8] = "Rabid Squirrel"
 $enemies[9] = "Grue"
+$enemies[10] = "Harpy"
+#enemy state block #see above for number refs
+$enemystate = [10]
+$enemystate[0] = 1
+$enemystate[1] = 1
+$enemystate[2] = 1
+$enemystate[3] = 1
+$enemystate[4] = 1
+$enemystate[5] = 1
+$enemystate[6] = 1
+$enemystate[7] = 1
+$enemystate[8] = 1
+$enemystate[9] = 1
 
 #loot block
 $madloot = [10]
@@ -66,80 +76,23 @@ $madloot[6] = "Uranium (235)"
 $madloot[7] = "Pearl"
 $madloot[8] = "Emerald"
 $madloot[9] = "Ruby"
+$madloot[10] = "Knucklebone"
 
 $ididitagain = 0 # :P
 
-def classprocessing(choice)
-	classname = $pclass #(make this global?)
-	if choice == 1 #lotsa dialogue
-		if $fudged == 0
-		puts "Greetings #{$userprofile['name']}...choose your stats..."
-		else
-		end
-		puts "You have a total of #{$points} to spend:"
+$taunts = [4]
+$taunts[0] = "You scream a profanity"
+$taunts[1] = "You raise a hand in an offensive manner"
+$taunts[2] = "@#!^$&#@#!&)!%@$"
+$taunts[3] = "You beckon with your hand"
+$taunts[4] = "You throw some dirt"
 
-		print "Strength: "
-		dmg = $stdin.gets.chomp.to_i
-		print "Luck: "
-		lck = $stdin.gets.chomp.to_i
-		print "Mana: "
-		mna = $stdin.gets.chomp.to_i
-		print "Resilience: "
-		dfs = $stdin.gets.chomp.to_i
-		dmg + lck + mna + dfs = $points_spent
-		if $points_spent < $points_total && $points_spent > $points_total
-			puts "Whoops, that didn't add up, try again..."
-			$fudged = 1
-			classprocessing(1)
-		else
-			puts "\nSo your stats are:" #each loop? #naw
-			puts "Strenth: #{dmg}"
-			puts "Luck: #{lck}"
-			puts "Mana: #{mna}"
-			puts "Resilience: #{dfs}"
-			puts "\n"
-			#puts ""
-			print "Are these the stats you want? [y/n]: "
-			queryk = $stdin.gets.chomp.downcase
-			if queryk == "y"
-				puts "Okay then!"
-				puts "\n"
-			elsif queryk == "yes"
-				puts "Okay then!"
-				puts "\n"
-			else
-				puts "Alright,let's reset your stats..."
-				puts ""
-				$fudged = 1
-				classprocessing(1)
-			end
-		end
-	else
-		print ""
-	end
-	pclass = $pclass
-	if pclass  == 1 #warrior
-		$stats['damage_bonus'] = 1
-		$stats['luck'] = 0
-		$stats['mana'] = 0
-		$stats['defense_bonus'] = 2
-	elsif pclass == 2 #thief
-		$stats['damage_bonus'] = 1
-		$stats['luck'] = 2
-		$stats['mana'] = 0
-		$stats['defense_bonus'] = 0
-	elsif pclass == 3 #wizard
-		$stats['damage_bonus'] = 0
-		$stats['luck'] = 0
-		$stats['mana'] = 3
-		$stats['defense_bonus'] = 0
-	end
-end
 
-def newuser() # user creation  #REWRITE AND PROCESS FFS # I DID IT
-	system 'clear'
+def newuser() # user creation  #REWRITE AND PROCESS FFS # I DID IT 
+	
 	if $ididitagain == 0
-		puts "\e[33m Welcome to the world of\e[34m Adventine!\e[37m" #colors!
+		system 'clear'
+		puts "Welcome to the world of Adventine!"	
 	else
 	end
 	print "What is your name?: "
@@ -153,25 +106,14 @@ def newuser() # user creation  #REWRITE AND PROCESS FFS # I DID IT
 	print "Class Selection: "
 	newclassthing = $stdin.gets.chomp.to_i
 	if newclassthing < 4 && newclassthing > 0
-		$pclass = newclassthing #stahf
-		print "Do you want to choose your stats? [y/n]: " ""
-		resultm = $stdin.gets.chomp.downcase
-		if resultm == "yes"
-			resultm = "y" #useless now
-			classprocessing(1)
-		elsif resultm == "y"
-			classprocessing(1)
-		else
-			classprocessing(0)
-		end
-		classprocessing($pclass)
+		$class = newclassthing
 	else
 		puts "Let's try this again...\n"
 		maybeidid = 1
 		$ididitagain = maybeidid
 		newuser()
 	end
-	#$pclass = newclassthing #depreceated
+	#$class = newclassthing #depreceated
 end
 
 def sneaking()
@@ -184,27 +126,33 @@ def sneaking()
 	end
 end
 
-def combatdialogue() #combatdialogue() is called by combat.dialogue
+def combatdialogue() #combatdialogue() is called by combat.dialogue 
 					 #which is called by processing.test
 					 ## SYNC WITH COMBAT CLASS WTF?!?!!?!
 					 ### recursive calls are so stupid
 	print """
 	[0] Do nothing
-	[1] Assault
+	[1] Engage
 	[2] Taunt
-	[3]	Dodge
+	[3]	Use an item
 	[4] Run Away
 	"""
 	print "\n: "
 	input = $stdin.gets.chomp
-	return input
+	if input < 5 && input >= 0
+		return input
+	else
+		puts "That's not an option..."
+		combatdialogue()
+	end
 end
 
-def helpwords()  ### add `inventory` and `class`
+def helpwords()  ### add `inventory` and `class` and `spellbook`
 	puts """
 	help - show this list
-	inventory - show inventory
+	inventory - show inventory 
 	class - show class details
+	spellbook - manage spellbook
 	north - move north
 	east - move east
 	south - move south
@@ -216,12 +164,13 @@ def helpwords()  ### add `inventory` and `class`
 	"""
 end
 
+#class Inventory
+#end
 
 def quitdialogue()
 	print "Are you sure you want to quit?[y/n]: "
 	input = $stdin.gets.chomp.downcase
 	if input == "y"
-	print "\e[0m"
 	exit(0)
 	else
 	puts ""
@@ -230,42 +179,67 @@ end
 
 def prompt()
 	@processing = Processing.new()
-	print "\e[31m\n\"#{$room}\"\e[92m>\e[36m "
+	print "\n\"#{$room}\"> "
 	input = $stdin.gets.chomp.downcase
 #	input2 = input.split  #nope.
 	@processing.test(input)
-	print "\e[37m" #default reset?
 	return input
+end
+
+def mclass(request)
+	if $class == 1 #warrior
+		puts """
+		You are a Warrior
+		"""
+	elsif $class == 2 #thief
+		puts """
+		You are a Thief
+		"""
+	elsif $class == 3 #wizard
+		puts """
+		You are a Wizard
+		""" #harry
+	else
+	end
 end
 
 class Creeps #the beasties
 
 	def bear
 	end
-
+	
 	def wolf
+		@combats = Combat.new()
 		puts "A wolf suddenly appears!"
 		newthing = combatdialogue()
+		if newthing == 0
+			
+		elsif newthing == 1
+		elsif newthing == 2
+		elsif newthing == 3
+		elsif newthing == 4
+		else
+		end
 	end
-
+	
 	def will
 	end
-
+	
 	def rabbit
 	end
-
+	
 	def donkey
 	end
-
+	
 	def fridaytests
 	end
-
+	
 	def rabidsquirrel
 	end
-
+	
 	def grue
 	end
-
+	
 end
 
 class MadLoot
@@ -287,12 +261,16 @@ class Use  #inventory processing
 	@usage.prompt()
 	end #if end
 	end #def end
-
+	
 	def inventory # yeah we do things here
 	end
-
+	
 	def room # room...specifics? case structures? ew....
 	end
+	
+	def spellbook
+	end
+	
 end
 
 class Room
@@ -300,7 +278,7 @@ class Room
 #		@initiated = initiated
 		@processing = Processing.new()
 	end
-
+	
 	def move(mover) #### new room state? simplification w/ processor?
 		roomtb = mover
 		mroom = Room.new()
@@ -317,6 +295,8 @@ class Room
 			mroom.southwall()
 		when "Darkness"
 			mroom.darkness()
+		when "East Forest Edge"
+			mroom.eastforestedge()
 		else
 		puts "You can't move there!"
 		roombleh = $room
@@ -334,7 +314,7 @@ class Room
 		#roomnow = $room
 		#mroom = Room.new()
 		#input = mover
-
+		
 		#case roomnow #case to decide movement
 		#when "Cavern"
 			#if input == "north"
@@ -342,7 +322,7 @@ class Room
 				#mroom.northlight
 			#elsif input == "south"
 				#room = mroom.newroom("South Wall")
-				#mroom.southwall
+				#mroom.southwall 
 			#elsif input == "west"
 				#room = mroom.darkness()
 			#elsif input == "east"
@@ -356,15 +336,15 @@ class Room
 		#else
 		#puts "You find yourself unable to move!!!"
 		#end
-
-
+		
+		
 	end
-
+	
 	def newroom(roomnew)
 		@roomstate = roomnew
 		$room = @roomstate # words are so hard
 	end
-
+	
 	def firstroom()
 		$room = "Cavern"
 		mroom = Room.new()  #short for ManageRoom
@@ -374,14 +354,14 @@ class Room
 		puts "There is darkness to the east"
 		puts "A wall lies to the south"
 		puts ""
-		input = prompt()
+		input = prompt() 
 		mroom.move(input)
 		#if input == "north"
 		#	room = mroom.newroom("Intersection")
 		#	mroom.northlight
 		#elsif input == "south"
 		#	room = mroom.newroom("South Wall")
-		#	mroom.southwall
+		#	mroom.southwall 
 		#elsif input == "west"
 		#	room = mroom.darkness()
 		#elsif input == "east"
@@ -389,23 +369,26 @@ class Room
 		#else
 		#end
 	end
-
+	
 	def darkness()
 		puts "You feel your body grow colder and colder..."
 		puts "Darkness overtakes you"
 		puts """
-		                   ---Game Over---
+		           ---Game Over---
 		"""
-		print "Try again? [y/n]"
-		input = prompt()
+		print "Try again? [y/n]: "
+		input = $stdin.gets.chomp.downcase
 		if input == "y"
+		start()
+		$fresh = 0
+		elsif input == "yes"
 		start()
 		$fresh = 0
 		else
 		exit(0)
 		end
 	end
-
+	
 	def northlight()
 		$room = "Intersection"
 		puts "Warmth flows through your body"
@@ -413,7 +396,7 @@ class Room
 		puts "Roads lead both west and east"
 		input = prompt()
 	end
-
+	
 	def southwall()
 		$room = "South Wall"
 		puts "As you look closely at the wall you notice"
@@ -423,9 +406,13 @@ class Room
 		# need to do command stuff here "help"
 		#@processing.test(input)  # test for "help"
 	end
-
+	
 	def eastforestedge() # interact with wolf! :DD
 						 ## DAMMIT I HAVE TO UPDATE EVERYTHING
+		$room = "East Forest Edge"
+		puts "A tall wall of trees lies before you"
+		puts "There is a small gap in the trees to pass through"
+		
 	end
 end
 
@@ -460,6 +447,8 @@ class Processing #write .test
 			sneaking()
 			when "use"
 			@muse.prompt()
+			when "class"
+			mclass($class) #maybe rework later with 'retrieve'?
 			when "y"
 			print ""
 			#when "n"
@@ -470,8 +459,10 @@ class Processing #write .test
 				@mroom.move("Intersection")
 				when "Intersection"
 				@mroom.move("")
-				when "South Room"
+				when "South Wall"
 				@mroom.move("Cavern")
+				when "East Forest Edge"
+				@mroom.move("Small Clearing")
 				end
 			when "south" #or "s"
 				case myroom
@@ -479,20 +470,26 @@ class Processing #write .test
 				@mroom.move("Cavern")
 				when "Cavern"
 				@mroom.move("South Wall")
+				when "East Forest Edge"
+				@mroom.move("")
 				end
 			when "east" #or "e"
 				case myroom
 				when "Cavern"
 				@mroom.move("Darkness")
 				when "Intersection"
-				@mroom.move("")
+				@mroom.move("East Forest Edge")
 				when "South Wall"
+				@mroom.move("")
+				when "East Forest Edge"
 				@mroom.move("")
 				end
 			when "west" #or "w"
 				case myroom
 				when "Cavern"
 				@mroom.move("Darkness")
+				when "East Forest Edge"
+				@mroom.move("Intersection")
 				end
 			else
 			puts "\npardon me?\n\n" #need to catch and restart room
@@ -518,7 +515,7 @@ class Combat  #check combatdialogue
 	#def initialize #definitions for class vars  #makeitstop
 	#@fdbk = Combat.new()
 	#end
-
+	
 	def dialogue
 		howdoi = $room
 		@creepz = Creeps.new()
@@ -529,9 +526,9 @@ class Combat  #check combatdialogue
 		when "Intersection"
 		when "East Forest Edge"
 		@creepz.wolf()
-		end
+		end	
 	end
-
+	
 	def engage(maybething)  ## add class `command`
 		if maybething == 1
 		elsif maybething == 2
@@ -552,7 +549,7 @@ class Combat  #check combatdialogue
 		print ": "
 		@fdbk.feedback()
 	end
-	def feedback
+	def feedback 
 			thingy = $stdin.gets.chomp
 			#@fdbk = Combat.new()
 			#if thingy == 1 || 2 || 3 || 4 # OH GOD YOU HAVE TO REDO IT
@@ -565,22 +562,24 @@ class Combat  #check combatdialogue
 			@fdbk.engage(spare)
 			end
 	end
-
+	
 	def flee
 	end
-
-	def talk
+	
+	def taunt
+		puts "#{$taunt.sample}"
 	end
-
+	
 	def fight
 	end
-
+	
+	
 	def cspecial
 	end
-
-	#def creepp #creep processing
+	
+	#def creepp #creep processing	
 	#end
-
+	
 	def randcreep
 		cotm = $enemies.sample #array goodness
 		@creepz = Creeps.new()
@@ -630,7 +629,7 @@ def start ()
 		else
 		prompt()
 		end # case end
-
+	
 	end #while end
 end #start end
 
