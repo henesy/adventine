@@ -1,3 +1,6 @@
+#!/usr/bin/env ruby
+# chmod +x ./adventineII2.0.rb
+# Maybe add our own packaged version of ruby?
 #require "./adv2rooms.rb"  #classes are cool
 #
 # Expansions can be added through:
