@@ -166,6 +166,7 @@ def newuser() # user creation  #REWRITE AND PROCESS FFS # I DID IT
 		elsif resultm == "y"
 			classprocessing(1)
 		else
+			puts ""
 			classprocessing(0)
 		end
 		classprocessing($pclass)
