@@ -31,6 +31,7 @@
 # • limited inventory (use `each` loops)
 # • color code output!
 # • levelling/stat increase XP build regular check system?
+# • A room class :: rewrite might be in order....
 #
 # -------- # Begin Global Variables # -------- #
 
@@ -53,7 +54,7 @@ $stats = {
 	'mana' => 0,
 	'defense_bonus' => 0
 	} #hashes fuck yeah
-
+$blank = "sweetie bot"
 # classes:
 # Warrior, Thief, Wizard
 $inventory = {} #more..hashes? maybe? sleep on this one
@@ -229,7 +230,7 @@ def combatdialogue() #combatdialogue() is called by combat.dialogue
 	[0] Do nothing
 	[1] Assault
 	[2] Taunt
-	[3]	Dodge
+	[3] Dodge
 	[4] Run Away
 	"""
 	print "\n: "
@@ -285,21 +286,106 @@ end
 
 class Creeps #the beasties
 
-	def engage(mob) #if and stuff
-		# if mob statement here #case *ftfy
+#cased initialize + case?
+	def initialize(mob)
+		#@creepz = Creeps.new("") ## OOPS
 		case mob
 		when "Wolf"
-			puts "\nA vicious wolf stands before you menacingly!"
+					@currentmob = "Wolf"
+					@hp = 5
+					@dfs = 1
+					@atk = 1
+					@mna = 0
+					@lck = 0
+		when "Bear"
+			@currentmob = "Bear"
+		when "Will"
+			@currentmob = "Will"
+		when "Rabbit"
+			@currentmob = "Rabbit"
+		when "Donkey"
+			@currentmob = "Donkey"
+		when "Friday Tests"
+			@currentmob = "Friday Tests"
+		when "Rabid Squirrel"
+			@currentmob = "Rabid Squirrel"
+		when "Grue"
+			@currentmob = "Grue"
+		else
 		end
+	end
+
+	def engage(mob) #if and stuff
+		# if mob statement here #case *ftfy
+		@creepz = Creeps.new($blank)
+		case mob #only handles text....
+		when "Wolf"
+			puts "\nA vicious wolf stands before you menacingly!"
+		when "Bear"
+		when "Will"
+		when "Rabbit"
+		end #end case
 
 		@fighting = 1
+		@creepz.engage_utility()
+		#stop = 0
+		#until stop == 1 #UNTIL
+		# newthing = combatdialogue()
+		# newthing = newthing.to_i
+		# if newthing > -1 && newthing < 5
+		# 	#return newthing  #moved to respond() ## *think
+		# 	@creepz.think(newthing)
+		# 	stop =1
+		# else
+		#end
+		end
+
+	def engage_utility() #hotfix ## fixed
+		@creepz = Creeps.new($blank)
 		newthing = combatdialogue()
-		case newthing
-		when 0
-		when 1
-		when 2
-		when 3
-		when 4
+		newthing = newthing.to_i
+		if newthing > -1 && newthing < 5
+			#return newthing  #moved to respond() ## *think
+			@creepz.think(newthing)
+		else
+		engage_utility(newthing)
+	end
+
+	end #def .engage(mob) end
+
+	def attack
+	end
+
+	def respond(action)
+
+	end
+
+	def think(response)
+		case @currentmob
+		when "Wolf"
+			if response == 0
+			elsif response == 1
+			elsif response == 2
+			elsif response == 3
+			elsif response == 4
+			else
+				puts "Error Report: 'In Creeps.think in `when \"Wolf\"`'"
+			end
+		when "Bear"
+
+		when "Will"
+
+		when "Rabbit"
+
+		when "Donkey"
+
+		when "Friday Tests"
+
+		when "Rabid Squirrel"
+
+		when "Grue"
+
+		else
 		end
 	end
 
@@ -310,16 +396,20 @@ class Creeps #the beasties
 	end
 
 	class Wolf < Creeps
-		def initialize()
-				@hp = 5
-				@dfs = 1
-				@atk = 1
-				@mna = 0
-				@lck = 0
+		# def initialize() #migrating to master
+		# 		@hp = 5
+		# 		@dfs = 1
+		# 		@atk = 1
+		# 		@mna = 0
+		# 		@lck = 0
+		# end
+		def initialize(mob)
+			super(mob)
 		end
 
-	end
-	# def wolf() #migrate to class structure with Creeps::wolf.attack etc
+	end #end of Wolf
+
+	# def wolf() #migrate to class structure with Creeps::wolf.attack
 	# 	# standard style init
 	# 	hp = 5
 	# 	dfs = 1
@@ -525,7 +615,7 @@ class Room
 
 	def eastforestedge() # interact with wolf! :DD
 						$room = "East Forest Edge"
-						mcreep = Creeps::Wolf.new()
+						mcreep = Creeps::Wolf.new("Wolf")
 						## DAMMIT I HAVE TO UPDATE EVERYTHING
 						puts "Tall trees tower over you"
 						#puts "#{$estate['Wolf']}" #testing hash format
@@ -543,7 +633,7 @@ end #class end
 
 class Processing #write .test
 	def test(words) #edit
-		@combat = Combat.new()
+		@combat = Combat.new() #careful...
 		@mroom = Room.new()
 		@muse = Use.new()
 		toreturn = ""
@@ -567,7 +657,7 @@ class Processing #write .test
 			when "quit"
 			quitdialogue()
 			when "attack"
-			@combat.dialogue()
+			@combat.process() #argh #fixed
 			when "sneak"
 			sneaking()
 			when "use"
@@ -650,54 +740,59 @@ class Combat  #check combatdialogue
 	# this needs a rewrite
 	### No seriously, this is a f**king mess
 
-	def dialogue
+	def process  #all this does is process things, renaming
 		howdoi = $room
-		@creepz = Creeps.new()
-		@wolf = @creepz::Wolf.new()
+		@creepz = Creeps.new("")
+		@wolf = @creepz::Wolf.new("Wolf")
+		nothing = "There's nothing to fight\n"
 		case howdoi
 		when "Cavern"
-		puts "There's nothing to fight\n"
+			puts "#{nothing}"
 		when "South Wall"
+			puts "#{nothing}"
 		when "Intersection"
+			puts "#{nothing}"
 		when "East Forest Edge"
 		@wolf.engage("Wolf")
 		end
 	end
 
 ### ALL OF THIS IS SO BAD BAD BAD BAD BAD BAD BAD BAD BAD
-	def engage(maybething)  ## add class `command`
-		if maybething == 1
-		elsif maybething == 2
-		elsif maybething == 3
-		elsif maybething == 4
-		else
-		print "" #ON PURPOSE SHOOT A BLANK
-		#@fdbk.engage()  #no...?
-		end
-		@fdbk = Combat.new()
-		puts "How do you want to react?"
-		print """
-		[1] Bravely Flee!
-		[2] Talk to it...
-		[3] Engage it!
-		[4] (Class Ability)
-		"""
-		print ": "
-		@fdbk.feedback()
-	end
-	def feedback
-			thingy = $stdin.gets.chomp
-			#@fdbk = Combat.new()
-			#if thingy == 1 || 2 || 3 || 4 # OH GOD YOU HAVE TO REDO IT
-			# look at how sexy that fix is
-			if thing < 5 && thing > 0
-			@fdbk.engage(thingy)
-			else
-			print "Try a real option: "
-			spare = 0
-			@fdbk.engage(spare)
-			end
-	end
+### is this even used?!
+####### NO IT IS NOT USED GET RID OF THIS JUNK
+	# def engage(maybething)  ## add class `command`
+	# 	if maybething == 1
+	# 	elsif maybething == 2
+	# 	elsif maybething == 3
+	# 	elsif maybething == 4
+	# 	else
+	# 	print "" #ON PURPOSE SHOOT A BLANK
+	# 	#@fdbk.engage()  #no...?
+	# 	end
+	# 	@fdbk = Combat.new("")
+	# 	puts "How do you want to react?"
+	# 	print """
+	# 	[1] Bravely Flee!
+	# 	[2] Talk to it...
+	# 	[3] Engage it!
+	# 	[4] (Class Ability)
+	# 	"""
+	# 	print ": "
+	# 	@fdbk.feedback()
+	# end
+	# def feedback
+	# 		thingy = $stdin.gets.chomp
+	# 		#@fdbk = Combat.new()
+	# 		#if thingy == 1 || 2 || 3 || 4 # OH GOD YOU HAVE TO REDO IT #DID IT
+	# 		# look at how sexy that fix is
+	# 		if thing < 5 && thing > 0
+	# 		@fdbk.engage(thingy)
+	# 		else
+	# 		print "Try a real option: "
+	# 		spare = 0
+	# 		@fdbk.engage(spare)
+	# 		end
+	# end
 
 	def flee
 	end
@@ -716,14 +811,14 @@ class Combat  #check combatdialogue
 
 	def randcreep
 		cotm = $enemies.sample #array goodness
-		@creepz = Creeps.new()
-		@bear = @creepz::Bear.new()
-		@wolf = @creepz::Wolf.new()
-		@rabbit = @creepz::Rabbit.new()
-		@donkey = @creepz::Donkey.new()
-		@fridaytests = @creepz::Fridaytests.new()
-		@rabidsquirrel = @creepz::Rabidsquirrel.new()
-		@grue = @creepz::Grue.new()
+		@creepz = Creeps.new("")
+		@bear = @creepz::Bear.new("Bear")
+		@wolf = @creepz::Wolf.new("Wolf")
+		@rabbit = @creepz::Rabbit.new("Rabbit")
+		@donkey = @creepz::Donkey.new("Donkey")
+		@fridaytests = @creepz::Fridaytests.new("Friday Tests")
+		@rabidsquirrel = @creepz::Rabidsquirrel.new("Rabid Squirrel")
+		@grue = @creepz::Grue.new("Grue")
 
 		case cotm # from index
 		when "Bear"
