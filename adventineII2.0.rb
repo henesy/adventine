@@ -382,7 +382,6 @@ class Use  #inventory processing
 end
 
 class Room
-
 	def initialize()  #run at .new() #unnecessary
 #		@initiated = initiated
 		@processing = Processing.new()
