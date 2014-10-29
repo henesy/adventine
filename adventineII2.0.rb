@@ -285,10 +285,31 @@ end
 
 class Creeps #the beasties
 
-	def bear
+	def engage(mob) #if and stuff
+		# if mob statement here #case *ftfy
+		case mob
+		when "Wolf"
+			puts "\nA vicious wolf stands before you menacingly!"
+		end
+
+		@fighting = 1
+		newthing = combatdialogue()
+		case newthing
+		when 0
+		when 1
+		when 2
+		when 3
+		when 4
+		end
 	end
 
-	class Wolf
+	def defeated
+	end
+
+	class Bear < Creeps
+	end
+
+	class Wolf < Creeps
 		def initialize()
 				@hp = 5
 				@dfs = 1
@@ -297,18 +318,6 @@ class Creeps #the beasties
 				@lck = 0
 		end
 
-		def engage() #if and stuff
-			puts "\nA vicious wolf suddenly appears!"
-			@fighting = 1
-			newthing = combatdialogue()
-			case newthing
-			when 0
-			when 1
-			when 2
-			when 3
-			when 4
-			end
-		end
 	end
 	# def wolf() #migrate to class structure with Creeps::wolf.attack etc
 	# 	# standard style init
@@ -334,27 +343,27 @@ class Creeps #the beasties
 	# 	end
 	# end
 
-	def will
+	class Will < Creeps
 	end
 
-	def rabbit
+	class Rabbit < Creeps
 	end
 
-	def donkey
+	class Donkey < Creeps
 	end
 
-	def fridaytests
+	class Fridaytests < Creeps
 	end
 
-	def rabidsquirrel
+	class Rabidsquirrel < Creeps
 	end
 
-	def grue
+	class Grue < Creeps
 	end
 
 end
 
-class MadLoot
+class MadLoot #one day...
 end
 
 class Use  #inventory processing
@@ -523,7 +532,7 @@ class Room
 						if $east_wolf == 1
 							#puts "A vicious wolf appears!" #migrated to creeps
 							$engaged = 1
-							mcreep.engage()
+							mcreep.engage("Wolf")
 						else
 						end
 						input = prompt() #NEVER FORGETTI
@@ -642,13 +651,14 @@ class Combat  #check combatdialogue
 	def dialogue
 		howdoi = $room
 		@creepz = Creeps.new()
+		@wolf = @creepz::Wolf.new()
 		case howdoi
 		when "Cavern"
 		puts "There's nothing to fight\n"
 		when "South Wall"
 		when "Intersection"
 		when "East Forest Edge"
-		@creepz.wolf()
+		@wolf.engage("Wolf")
 		end
 	end
 
@@ -704,24 +714,32 @@ class Combat  #check combatdialogue
 	def randcreep
 		cotm = $enemies.sample #array goodness
 		@creepz = Creeps.new()
+		@bear = @creepz::Bear.new()
+		@wolf = @creepz::Wolf.new()
+		@rabbit = @creepz::Rabbit.new()
+		@donkey = @creepz::Donkey.new()
+		@fridaytests = @creepz::Fridaytests.new()
+		@rabidsquirrel = @creepz::Rabidsquirrel.new()
+		@grue = @creepz::Grue.new()
+
 		case cotm # from index
 		when "Bear"
-		@creepz.bear()
+		@bear.engage("Bear")
 		when "Wolf"
-		@creepz.wolf()
+		@wolf.engage("Wolf")
 		#when ""
 		#when ""
 		#when ""
 		when "Rabbit"
-		@creepz.rabbit()
+		@rabbit.engage("Rabbit")
 		when "Donkey"
-		@creepz.donkey()
+		@donkey.engage("Donkey")
 		when "Friday Tests"
-		@creepz.fridaytests()
+		@fridaytests.engage("Friday Tests")
 		when "Rabid Squirrel"
-		@creepz.rabidsquirrel()
+		@rabidsquirrel.engage("Rabid Squirrel")
 		when "Grue"
-		@creepz.grue()
+		@grue.engage("Grue")
 		#else
 		#puts "hurro"
 		end
