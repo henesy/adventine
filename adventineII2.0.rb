@@ -647,6 +647,8 @@ class Combat  #check combatdialogue
 	#def initialize #definitions for class vars  #makeitstop
 	#@fdbk = Combat.new()
 	#end
+	# this needs a rewrite
+	### No seriously, this is a f**king mess
 
 	def dialogue
 		howdoi = $room
@@ -662,6 +664,7 @@ class Combat  #check combatdialogue
 		end
 	end
 
+### ALL OF THIS IS SO BAD BAD BAD BAD BAD BAD BAD BAD BAD
 	def engage(maybething)  ## add class `command`
 		if maybething == 1
 		elsif maybething == 2
