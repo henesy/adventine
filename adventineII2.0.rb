@@ -11,7 +11,7 @@
 ### Adventine was originally created as a programming class project
 #
 #
-# v2.2.6
+# v2.2.7
 # 2.2.0: north room, basic dialogue
 # 2.2.1: all 1g rooms, medium dialogue
 # 2.2.2: user creation dialogue (kinda)
@@ -19,6 +19,8 @@
 # 2.2.4: added class dialogue (expanded)
 # 2.2.5: added COLORS!!!!!
 # 2.2.6: bugfixes, cleared up code for moving, minor rebuild of stats
+# 2.2.7: bugfixes with movement, added combat basics and loop, overhauled
+# the framework for creatures, added creatures and stats and player classes
 #
 # ----------Braining----------
 # Rooms: Cavern, South Wall, Intersection, East Forest Edge
@@ -234,7 +236,7 @@ def combatdialogue() #combatdialogue() is called by combat.dialogue
 	[4] Run Away
 	"""
 	print "\n: "
-	input = $stdin.gets.chomp.to_i
+	input = $stdin.gets.chomp.to_i #fix this cause letters
 	if input > -1 && input <5
 		return input
 	else
@@ -262,7 +264,7 @@ end
 
 
 def quitdialogue()
-	print "Are you sure you want to quit?[y/n]: "
+	print "Are you sure you want to quit? [y/n]: "
 	input = $stdin.gets.chomp.downcase
 	if input == "y"
 	print "\e[0m"
@@ -289,6 +291,7 @@ class Creeps #the beasties
 #cased initialize + case?
 	def initialize(mob)
 		#@creepz = Creeps.new("") ## OOPS
+		#@dummy = "meep"
 		case mob
 		when "Wolf"
 					@currentmob = "Wolf"
@@ -353,17 +356,50 @@ class Creeps #the beasties
 
 	end #def .engage(mob) end
 
-	def attack
+	def attack #HOLY COW WE CAN FINALLY DO MATHS AND COMBAT!!!
 	end
 
-	def respond(action)
+###
+# case @currentmob
+# when "Wolf"
+# when "Bear"
+# when "Will"
+# when "Rabbit"
+# when "Donkey"
+# when "Friday Tests"
+# when "Rabid Squirrel"
+# when "Grue"
+# end
+###
 
-	end
+	def respond(action) # respond - to - action
+	case action
+	when "Do Nothing" #0
+		case @currentmob
+		when "Wolf"
+			mresponse = Creeps::Wolf.new()
+			mresponse.attack()
+		when "Bear"
+		when "Will"
+		when "Rabbit"
+		when "Donkey"
+		when "Friday Tests"
+		when "Rabid Squirrel"
+		when "Grue"
+		end
+	when "Assault" #1
+	when "Taunt" #2
+	when "Dodge" #3
+	when "Run Away" #4
+	end #master case end
+end #def end
 
 	def think(response)
 		case @currentmob
 		when "Wolf"
+			mresponse = Creeps::Wolf.new()
 			if response == 0
+				mresponse.respond("Do Nothing")
 			elsif response == 1
 			elsif response == 2
 			elsif response == 3
@@ -505,7 +541,7 @@ class Room
 		when "East Forest Edge"
 			mroom.eastforestedge()
 		else
-		puts "You can't move there!\n\n"
+		puts "\nYou can't move there!\n\n"
 		roombleh = $room
 		case roombleh
 		when "Cavern"
@@ -654,14 +690,17 @@ class Processing #write .test
 		case words #directionals handled inside room fxns
 			when "help"
 			helpwords()
+			prompt() #easy peasy
 			when "quit"
 			quitdialogue()
 			when "attack"
 			@combat.process() #argh #fixed
+			prompt()
 			when "sneak"
 			sneaking()
 			when "use"
 			@muse.prompt()
+			prompt()
 			when "y"
 			print ""
 			#when "n"
@@ -672,7 +711,7 @@ class Processing #write .test
 					@mroom.move("Intersection")
 				when "Intersection"
 					@mroom.move("")
-				when "South Room"
+				when "South Wall"
 					@mroom.move("Cavern")
 				when "East Forest Edge"
 					@mroom.move("")
@@ -742,8 +781,8 @@ class Combat  #check combatdialogue
 
 	def process  #all this does is process things, renaming
 		howdoi = $room
-		@creepz = Creeps.new("")
-		@wolf = @creepz::Wolf.new("Wolf")
+		#@creepz = Creeps.new("Bloop")
+		@wolf = Creeps::Wolf.new("Wolf")
 		nothing = "There's nothing to fight\n"
 		case howdoi
 		when "Cavern"
