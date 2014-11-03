@@ -214,15 +214,48 @@ def newuser() # user creation  #REWRITE AND PROCESS FFS # I DID IT
 	#$pclass = newclassthing #depreceated
 end
 
-def sneaking()
+def roll() #dice dice baby
+	rand(1..20) #1-20 inclusively
+end
+
+class Sneaking
+
+def toggle()
+	currentclass = $userprofile['class']
 	if $sneakstate == 0
+		case $pclass
+		when 2
+			puts "You slink low to the ground and fade into the shadows..."
+		when 1
+			puts "You slump your shoulders and bend over, attempting stealth..."
+		when 3
+			puts "You crouch and begin shuffling along the ground..."
+		end
 		$sneakstate = 1
 	elsif $sneakstate == 1
+		puts "You stand up, casting aside any concept of the element of surprise..."
 		$sneakstate = 0
 	else
-		print ""
+		print "Error in \"class Sneaking\""
 	end
 end
+
+def test(difficulty) #called by mobs
+	#benchmarking this is kinda hard, experimental values
+	#looking at about a cap of difficulty at 30 or so DnD style
+	#making this about +11 at max bonus, which sounds reasonable to me
+	case difficulty
+	when "Easy"
+		thing = roll() + stats['luck'] +6
+	when "Medium"
+		thing = roll() + stats['luck'] +2
+	when "Hard"
+		thing = roll() +stats['luck'] +0
+	end
+	return thing
+end
+
+end #class end
 
 def combatdialogue() #combatdialogue() is called by combat.dialogue
 					 #which is called by processing.test
@@ -372,7 +405,7 @@ class Creeps #the beasties
 # end
 ###
 
-	def respond(action) # respond - to - action
+def respond(action) # respond - to - action
 	case action
 	when "Do Nothing" #0
 		case @currentmob
@@ -394,7 +427,7 @@ class Creeps #the beasties
 	end #master case end
 end #def end
 
-	def think(response)
+def think(response)
 		case @currentmob
 		when "Wolf"
 			mresponse = Creeps::Wolf.new()
@@ -426,7 +459,15 @@ end #def end
 	end
 
 	def defeated
+	case @currentmob
+	when "Wolf"
+		puts "The wolf keels over, twitches once, then is still..."
+		$engaged = 0
+		$east_wolf = 0
+		$estate['Wolf'] = 0
 	end
+	end #def end
+#end
 
 	class Bear < Creeps
 	end
@@ -697,7 +738,11 @@ class Processing #write .test
 			@combat.process() #argh #fixed
 			prompt()
 			when "sneak"
-			sneaking()
+			#sneaking() #migrated
+			sneaking = Sneaking.new()
+			sneaking.toggle()
+			#puts $sneakstate
+			prompt()
 			when "use"
 			@muse.prompt()
 			prompt()
