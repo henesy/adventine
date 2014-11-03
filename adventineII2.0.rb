@@ -125,7 +125,7 @@ def classprocessing(choice)
 		mna = $stdin.gets.chomp.to_i
 		print "Resilience: "
 		dfs = $stdin.gets.chomp.to_i
-		dmg + lck + mna + dfs = $points_spent
+		$points_spent = dmg + lck + mna + dfs
 		if $points_spent < $points_total && $points_spent > $points_total
 			puts "Whoops, that didn't add up, try again..."
 			$fudged = 1
@@ -178,7 +178,7 @@ end
 def newuser() # user creation  #REWRITE AND PROCESS FFS # I DID IT
 	system 'clear'
 	if $ididitagain == 0
-		puts "\e[33m Welcome to the world of\e[34m Adventine!\e[37m" #colors!
+		puts "\e[33m Welcome to the world of\e[35m Adventine!\e[37m" #colors!
 	else
 	end
 	print "What is your name?: "
