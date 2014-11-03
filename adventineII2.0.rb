@@ -27,13 +27,16 @@
 #
 # Ideas: item dropping, static objects in general
 # • implementing a real class structure (working on that)
-# • word processing (hah)
+# • word processing (hah) #stretch goal
 # • class dynamics of some sort (working on that)
 # • interactive items
-# • limited inventory (use `each` loops)
-# • color code output!
+# • limited inventory (use `each` loops) #done
+# • color code output! #done
 # • levelling/stat increase XP build regular check system?
 # • A room class :: rewrite might be in order....
+#
+# v2.1 reqs: 5 rooms, all commands functional
+#
 #
 # -------- # Begin Global Variables # -------- #
 
@@ -361,7 +364,7 @@ class Inventory
 		# return an array as well, process the relationships and strings
 	end
 
-	def update
+	def update # not necessary, can set $inventory[n] manually
 	end
 
 	def check #save this for inventory check calls
@@ -439,7 +442,33 @@ class Creeps #the beasties
 
 	end #def .engage(mob) end
 
-	def attack #HOLY COW WE CAN FINALLY DO MATHS AND COMBAT!!!
+	def attack(mob) #HOLY COW WE CAN FINALLY DO MATHS AND COMBAT!!!
+		# use rand(1..3) or something to sample attacks
+		case @currentmob
+		when "Wolf"
+			output = roll() + @atk + @lck
+		when "Bear"
+		when "Will"
+		when "Rabbit"
+		when "Donkey"
+		when "Friday Tests"
+		when "Rabid Squirrel"
+		when "Grue"
+		end
+	end
+
+	def defend(damage)
+		case @currentmob
+		when "Wolf"
+			output = damage - @dfs
+		when "Bear"
+		when "Will"
+		when "Rabbit"
+		when "Donkey"
+		when "Friday Tests"
+		when "Rabid Squirrel"
+		when "Grue"
+		end
 	end
 
 ###
@@ -694,11 +723,11 @@ class Room
 		$room = "Cavern"
 		#$inventory[1] = "Torch" #reasons
 		mroom = Room.new()  #short for ManageRoom
-		puts "You are in a cold cavern"
-		puts "There is a dim light shining from the north"
-		puts "There is a chilly breeze from the west"
-		puts "There is darkness to the east"
-		puts "A wall lies to the south"
+		puts "You are in a cold cavern".brown
+		puts "There is a dim light shining from the north".brown
+		puts "There is a chilly breeze from the west".brown
+		puts "There is darkness to the east".brown
+		puts "A wall lies to the south".brown
 		puts ""
 		input = prompt()
 		mroom.move(input)
@@ -717,12 +746,12 @@ class Room
 	end
 
 	def darkness()
-		puts "You feel your body grow colder and colder..."
-		puts "Darkness overtakes you"
+		puts "You feel your body grow colder and colder...".brown
+		puts "Darkness overtakes you".brown
 		puts """
 		                   ---Game Over---
-		"""
-		print "Try again? [y/n]"
+		""".red
+		print "Try again? [y/n]: ".red
 		input = prompt()
 		if input == "y"
 		start()
@@ -734,16 +763,16 @@ class Room
 
 	def northlight()
 		$room = "Intersection"
-		puts "Warmth flows through your body"
-		puts "A small house is visible to the north"
-		puts "Roads lead both west and east"
+		puts "Warmth flows through your body".brown
+		puts "A small house is visible to the north".brown
+		puts "Roads lead both west and east".brown
 		input = prompt()
 	end
 
 	def southwall()
 		$room = "South Wall"
-		puts "As you look closely at the wall you notice"
-		puts "a small hairline crack runs from the ceiling to the floor"
+		puts "As you look closely at the wall you notice".brown
+		puts "a small hairline crack runs from the ceiling to the floor".brown
 		#puts "the floor"
 		input = prompt()
 		# need to do command stuff here "help"
@@ -754,7 +783,7 @@ class Room
 						$room = "East Forest Edge"
 						mcreep = Creeps::Wolf.new("Wolf")
 						## DAMMIT I HAVE TO UPDATE EVERYTHING
-						puts "Tall trees tower over you"
+						puts "Tall trees tower over you".brown
 						#puts "#{$estate['Wolf']}" #testing hash format
 						if $east_wolf == 1
 							#puts "A vicious wolf appears!" #migrated to creeps
