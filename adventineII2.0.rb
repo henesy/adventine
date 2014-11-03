@@ -59,7 +59,9 @@ $stats = {
 $blank = "sweetie bot"
 # classes:
 # Warrior, Thief, Wizard
-$inventory = {} #more..hashes? maybe? sleep on this one
+#$inventory = {} #more..hashes? maybe? sleep on this one ##slept on it
+$inventory = [20] #must be crawled, therefore: array
+
 $fresh = 0
 $pclass = ""
 $engaged = 0
@@ -107,6 +109,17 @@ $madloot[9] = "Ruby"
 $ididitagain = 0 # :P
 
 # -------- # End Global Variables # -------- #
+
+class String #manipulate internal stuffs
+	def black;          "\033[30m#{self}\033[0m" end
+	def red;            "\033[31m#{self}\033[0m" end
+	def green;          "\033[32m#{self}\033[0m" end
+	def brown;          "\033[33m#{self}\033[0m" end
+	def blue;           "\033[34m#{self}\033[0m" end
+	def magenta;        "\033[35m#{self}\033[0m" end
+	def cyan;           "\033[36m#{self}\033[0m" end
+	def gray;           "\033[37m#{self}\033[0m" end
+end
 
 def classprocessing(choice)
 	classname = $pclass #(make this global?)
@@ -318,6 +331,37 @@ def prompt()
 end
 
 # -------- # End Global Def's / Begin Classes # -------- #
+
+class Inventory
+
+	def dialogue
+		invent = Inventory.new()
+		print "Do you want to view your inventory? [y/n]: "
+		resp = $stdin.gets.chomp.downcase
+		if resp == "yes"
+			invent.show()
+		elsif resp == "y"
+			invent.show()
+		else
+			prompt()
+		end
+	end
+
+	def show
+		puts "+----------------+"
+		items = $inventory
+		items.each do |n|
+			puts "| "
+		end
+	end
+
+	def update
+	end
+
+	def check #save this for inventory check calls
+	end
+
+end
 
 class Creeps #the beasties
 
