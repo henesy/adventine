@@ -348,11 +348,12 @@ class Inventory
 	end
 
 	def show
-		puts "+----------------+"
+		puts "+----------------+".magenta
 		items = $inventory
 		items.each do |n|
-			puts "| "
+			puts "| #{n}".magenta
 		end
+		puts "+----------------+".magenta
 	end
 
 	def update
@@ -579,6 +580,7 @@ end
 
 class Use  #inventory processing
 	def prompt
+	@invent = Inventory.new()
 	@usage = Use.new()
 	print "From Inventory [1]\nIn Room [2]\n\n: "
 	answer = $stdin.gets.chomp.to_i
@@ -595,6 +597,7 @@ class Use  #inventory processing
 	end #def end
 
 	def inventory # yeah we do things here
+		@invent.dialogue()
 	end
 
 	def room # room...specifics? case structures? ew....
@@ -677,6 +680,7 @@ class Room
 
 	def firstroom()
 		$room = "Cavern"
+		#$inventory[1] = "Torch" #reasons
 		mroom = Room.new()  #short for ManageRoom
 		puts "You are in a cold cavern"
 		puts "There is a dim light shining from the north"
@@ -757,6 +761,7 @@ class Processing #write .test
 		@combat = Combat.new() #careful...
 		@mroom = Room.new()
 		@muse = Use.new()
+		@invent = Inventory.new()
 		toreturn = ""
 		myroom = $room
 		if words == "n" #to change "n" to "north"
@@ -786,6 +791,9 @@ class Processing #write .test
 			sneaking = Sneaking.new()
 			sneaking.toggle()
 			#puts $sneakstate
+			prompt()
+			when "inventory"
+			@invent.dialogue()
 			prompt()
 			when "use"
 			@muse.prompt()
@@ -977,6 +985,7 @@ end # def end
 
 def start ()
 	mroom = Room.new()  #short for ManageRoom
+	$inventory[0] = "Torch"
 	if $fresh == 0
 	newuser()
 	else
