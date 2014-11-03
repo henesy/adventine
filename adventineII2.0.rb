@@ -350,10 +350,15 @@ class Inventory
 	def show
 		puts "+----------------+".magenta
 		items = $inventory
+		itemnum = 0
 		items.each do |n|
 			puts "| #{n}".magenta
 		end
 		puts "+----------------+".magenta
+		#
+		# sleep on this...look at use again....
+		# you need to write stuff to read from arrays and transfer data
+		# return an array as well, process the relationships and strings
 	end
 
 	def update
@@ -589,6 +594,7 @@ class Use  #inventory processing
 		@usage.room
 		else
 		@usage.inventory
+		@usage.inventoryprocess
 		end
 	else
 	puts "Um, Where?"
@@ -597,12 +603,18 @@ class Use  #inventory processing
 	end #def end
 
 	def inventory # yeah we do things here
-		@invent.dialogue()
+		@invent = Inventory.new()
+		@invent.show()
 	end
 
 	def room # room...specifics? case structures? ew....
 	end
-end
+
+	def inventoryprocess
+
+	end
+
+end #class end
 
 class Room
 	def initialize()  #run at .new() #unnecessary
