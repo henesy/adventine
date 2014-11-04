@@ -190,6 +190,7 @@ def classprocessing(choice)
     $stats['mna'] = 3
     $stats['dfs'] = 0
   end
+	$stats['hp'] = 10
 end
 
 def newuser() # user creation  #REWRITE AND PROCESS FFS # I DID IT
@@ -203,9 +204,7 @@ def newuser() # user creation  #REWRITE AND PROCESS FFS # I DID IT
   puts "You must now select a class... " # class selection etc
   print """
   [1] Warrior
-
   [2] Thief
-
   [3] Wizard
 
   """
@@ -267,11 +266,11 @@ class Sneaking
     #making this about +11 at max bonus, which sounds reasonable to me
     case difficulty
     when "Easy"
-      thing = roll(20) + stats['lck'] +6
+      thing = roll(20) + $stats['lck'] +6
     when "Medium"
-      thing = roll(20) + stats['lck'] +2
+      thing = roll(20) + $stats['lck'] +2
     when "Hard"
-      thing = roll(20) +stats['lck'] +0
+      thing = roll(20) + $stats['lck'] +0
     end
     return thing
   end
@@ -284,13 +283,9 @@ def combatdialogue() #combatdialogue() is called by combat.dialogue
   ### recursive calls are so stupid
   print """
   [0] Do nothing
-
   [1] Assault
-
   [2] Taunt
-
   [3] Dodge
-
   [4] Run Away
 
   """
@@ -308,28 +303,17 @@ end
 
 def helpwords()  ### add `inventory` and `class`
   puts """
-  help - show this list
-
-  inventory - show inventory
-
-  class - show class details
-
+  	help - show this list
+  	inventory - show inventory
+  	class - show class details
     north - move north
-
     east - move east
-
     south - move south
-
     west - move west
-
     attack - attack dialogue
-
     sneak - enter sneak mode
-
     use - utilize item
-
     quit - leave game
-
     """
 
 end
@@ -404,8 +388,12 @@ class Creeps #the beasties
     case mob
     when "Wolf"
       @@currentmob = "Wolf"
-      @@hp = 5
-      @@dfs = 1
+      if $engaged == 0
+				@@hp = 5
+			else
+				@@hp = @@hp
+      end
+			@@dfs = 1
       @@atk = 1
       @@mna = 0
       @@lck = 0
@@ -426,17 +414,17 @@ class Creeps #the beasties
     else
       puts "Error in Creeps.initialize"
     end
-    puts "DEBUG: in initialize: #{@@currentmob}"
+    #puts "DEBUG: in initialize: #{@@currentmob}"
   end
 
   def engage(mob) #if and stuff
-    # if mob statement here #case *ftfy
+		# if mob statement here #case *ftfy
     case mob #only handles text....
     when "Wolf"
       creepz = Creeps::Wolf.new("Wolf")
       puts "\nA vicious wolf stands before you menacingly!" #works
       @@currentmob = "Wolf"
-      puts "DEBUG: in engage: #{@@currentmob}"
+      ###puts "DEBUG: in engage: #{@@currentmob}"
     when "Bear"
     when "Will"
     when "Rabbit"
@@ -459,10 +447,21 @@ class Creeps #the beasties
   end
 
   def engage_utility() #hotfix ## fixed
-
+		@@mroom = Room.new()
+		if $stats['hp'] > 0
+			puts "Your HP: #{$stats['hp']}"
+		else
+			@@mroom.darkness
+		end
+		if @@hp > 0
+			puts "#{@@currentmob}\'s HP: #{@@hp}"
+		else
+			@@creepz.defeated()
+			prompt()
+		end
     case @@currentmob
     when "Wolf"
-      creepz = Creeps::Wolf.new("Wolf")
+      @@creepz = Creeps::Wolf.new("Wolf")
     else
       puts "Case error in engage_utility"
     end
@@ -470,8 +469,8 @@ class Creeps #the beasties
     newpart = newthing.to_i
     if newpart > -1 && newpart < 5
       #return newthing  #moved to respond() ## *think
-      creepz.think(newpart)
-      puts "DEBUG: in engage_utility: #{@@currentmob}"
+      @@creepz.think(newpart)
+      ##puts "DEBUG: in engage_utility: #{@@currentmob}"
     else
       engage_utility(newpart)
     end #if end
@@ -481,7 +480,10 @@ class Creeps #the beasties
     # use rand(1..3) or something to sample attacks
     case @@currentmob
     when "Wolf"
-      output = roll(5) + @@atk + @@lck
+      puts "The wolf lunges at you!"
+			output = roll(2) + @@atk + @@lck - $stats['dfs']
+			puts "The wolf deals #{output} damage to you!"
+			$stats['hp'] = $stats['hp'] - output
     when "Bear"
     when "Will"
     when "Rabbit"
@@ -497,7 +499,9 @@ class Creeps #the beasties
   def defend(damage)
     case @@currentmob
     when "Wolf"
-      output = damage - @@dfs
+      output = (damage - @@dfs) + $stats['atk']
+			puts "The wolf whimpers, wounds showing..."
+			@@hp = @@hp - (damage - @@dfs)
     when "Bear"
     when "Will"
     when "Rabbit"
@@ -531,6 +535,7 @@ class Creeps #the beasties
       case @@currentmob
       when "Wolf"
         mresponse.attack()
+				mresponse.engage("Wolf")
       when "Bear"
       when "Will"
       when "Rabbit"
@@ -541,11 +546,13 @@ class Creeps #the beasties
       else
         puts "Error in Respond"
       end #wolf end
-    when "Assault" #1
+    when "Assault" #
       case @@currentmob
       when "Wolf"
         output = user.fight
         mresponse.defend(output)
+				mresponse.attack()
+				mresponse.engage_utility()
       when "Bear"
       when "Will"
       when "Rabbit"
@@ -601,7 +608,7 @@ class Creeps #the beasties
 
   def think(response)
     currentm = @@currentmob
-    puts "DEBUG: currentm: #{currentm}"
+    ##puts "DEBUG: currentm: #{currentm}"
     case currentm
     when "Wolf"
       mresponse = Creeps::Wolf.new("Wolf")
@@ -854,7 +861,8 @@ class Room
       """.red
 
       print "Try again? [y/n]: ".red
-      input = prompt()
+      #input = prompt()
+			input = $stdin.gets.chomp.downcase
       if input == "y"
         start()
         $fresh = 0
@@ -1091,12 +1099,16 @@ class Room
 
       print ": "
       stuff = $stdin.gets.chomp.to_i
-      if stuff > -1 && stuff < 2 #temp values
+      if stuff > (-1) && stuff < 2 #temp values
         if stuff == 0
-          output = roll(5) + stats['atk']
+          output = roll(5) + $stats['atk']
+					puts "You lung out with your fists, striking out!"
+					puts "You deal #{output} damage!"
+					return output
           if stuff == 1
             puts "Items are not fully integrated yet...sorry"
             cmbt.fight()
+						output = 0
           else
             puts "Error in Fight"
           end
