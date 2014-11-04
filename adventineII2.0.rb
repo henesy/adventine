@@ -906,6 +906,7 @@ class Room
     end
 
     def darkness()
+      @@mroom = Room.new()
       puts "You feel your body grow colder and colder...".brown
       puts "Darkness overtakes you".brown
       puts " ☠ Game Over ☠ ".red
@@ -914,9 +915,14 @@ class Room
       #input = prompt()
 			input = $stdin.gets.chomp.downcase
       if input == "y"
-        start()
         $fresh = 0
         $room = "Cavern"
+        #@@mroom.firstroom()
+        $engaged = 0
+        newuser()
+        @@mroom.firstroom
+        #$room = "Cavern"
+        #mroom.firstroom()
       else
         exit(0)
       end
