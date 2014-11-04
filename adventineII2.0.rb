@@ -61,7 +61,8 @@ $stats = {
   'lck' => 0,
   'mna' => 0,
   'dfs' => 0,
-  'hp' => 10
+  'hp' => 10,
+  'tmp' => 0
 } #hashes fuck yeah
 $blank = "sweetie bot"
 # classes:
@@ -72,6 +73,14 @@ $inventory = [20] #must be crawled, therefore: array
 $fresh = 0
 $pclass = ""
 $engaged = 0
+
+$taunts = [5]
+$taunts[0] = "You shout loud profanities, shaking your fist!"
+$taunts[1] = "You make a vague reference to something's mother..."
+$taunts[2] = "You adjust your trousers in an outwardly direction..."
+$taunts[3] = "You quickly scrawl a short book, using a nearby speck of dust for\nthe protagonist!"
+$taunts[4] = "You shout loudly!"
+$taunts[5] = "You spit in an outwardly direction!"
 
 #enemies block  # use $enemies.sample
 $enemies = [10] # need match-based enemy processing
@@ -494,9 +503,10 @@ class Creeps #the beasties
     case @@currentmob
     when "Wolf"
       puts "The wolf lunges at you!"
-			output = roll(2) + @@atk + @@lck - $stats['dfs']
+			output = (roll(3) - $stats['tmp']) + @@atk + @@lck - $stats['dfs']
 			puts "The wolf deals #{output} damage to you!"
 			$stats['hp'] = $stats['hp'] - output
+      $stats['tmp'] = 0 #reset for global
     when "Bear"
     when "Will"
     when "Rabbit"
@@ -541,7 +551,13 @@ class Creeps #the beasties
   ###
 
   def respond(action) # respond - to - action
-    mresponse = Creeps::Wolf.new("Wolf")
+    @@sneak = Sneaking.new()
+    @@mroom = Room.new()
+    case @@currentmob
+    when "Wolf"
+      mresponse = Creeps::Wolf.new("Wolf")
+    else
+    end
     user = Combat.new()
     case action
     when "Do Nothing" #0
@@ -579,7 +595,10 @@ class Creeps #the beasties
     when "Taunt" #2
       case @@currentmob
       when "Wolf"
+        user.taunt()
+        puts "The wolf growls at you and prepares to lunge!"
         mresponse.attack()
+        mresponse.engage_utility() #test if necessary ##is
       when "Bear"
       when "Will"
       when "Rabbit"
@@ -592,7 +611,10 @@ class Creeps #the beasties
     when "Dodge" #3
       case @@currentmob
       when "Wolf"
-
+        $stats['tmp'] = $stats['tmp'] + 2
+        puts "You bend your knees and watch the enemy closely!"
+        mresponse.attack()
+        mresponse.engage_utility()
       when "Bear"
       when "Will"
       when "Rabbit"
@@ -606,6 +628,24 @@ class Creeps #the beasties
     when "Run Away" #4
       case @@currentmob
       when "Wolf"
+        num = @@sneak.test("Medium")
+        if num == 1
+          numtmp = $stats['hp']
+          $stats['hp'] = numtmp - 2
+          mresponse.attack()
+          mresponse.engage_utility()
+        elsif num < 12
+          mresponse.attack()
+          mresponse.engage_utility()
+        else
+          puts "You bob and weave out of the way and sprint away!"
+          $engaged = 0
+          if $room == "East Forest Edge"
+            @@mroom.northlight()
+          else
+            puts "Error in Run Away!"
+          end
+        end
       when "Bear"
       when "Will"
       when "Rabbit"
@@ -1111,7 +1151,7 @@ class Room
       stuff = $stdin.gets.chomp.to_i
       if stuff > (-1) && stuff < 2 #temp values
         if stuff == 0
-          output = roll(5) + $stats['atk']
+          output = roll(5) + $stats['atk'] #+ $stats['tmp']
 					puts "You lung out with your fists, striking out!"
 					puts "You deal #{output} damage!"
 					return output
@@ -1131,6 +1171,9 @@ class Room
     def cspecial
     end
 
+    def taunt
+      puts "#{$taunts.sample}"
+    end
     #def creepp #creep processing
     #end
 
