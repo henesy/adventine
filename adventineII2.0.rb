@@ -916,6 +916,7 @@ class Room
       if input == "y"
         start()
         $fresh = 0
+        $room = "Cavern"
       else
         exit(0)
       end
