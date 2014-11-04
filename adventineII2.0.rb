@@ -404,7 +404,7 @@ class Creeps #the beasties
       if $engaged == 0
 				@@hp = 5
 			else
-				@@hp = @@hp
+        #@@hp = @@hp #re-int'ing OP bro
       end
 			@@dfs = 1
       @@atk = 1
@@ -514,7 +514,7 @@ class Creeps #the beasties
     when "Wolf"
       output = (damage - @@dfs) + $stats['atk']
 			puts "The wolf whimpers, wounds showing..."
-			@@hp = @@hp - (damage - @@dfs)
+			@@hp = @@hp - ((damage - @@dfs) + $stats['atk'])
     when "Bear"
     when "Will"
     when "Rabbit"
