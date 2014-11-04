@@ -12,7 +12,7 @@
 ### Adventine was originally created as a programming class project
 #
 #
-# v2.2.7
+# Current Version: 2.2.8
 # 2.2.0: north room, basic dialogue
 # 2.2.1: all 1g rooms, medium dialogue
 # 2.2.2: user creation dialogue (kinda)
@@ -21,7 +21,9 @@
 # 2.2.5: added COLORS!!!!!
 # 2.2.6: bugfixes, cleared up code for moving, minor rebuild of stats
 # 2.2.7: bugfixes with movement, added combat basics and loop, overhauled
-# the framework for creatures, added creatures and stats and player classes
+# 	the framework for creatures, added creatures and stats and player classes
+# 2.2.8: combat is complete implemented! Death can occur through combat
+#
 #
 # ----------Braining----------
 # Rooms: Cavern, South Wall, Intersection, East Forest Edge
