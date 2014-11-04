@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # chmod +x ./adventineII2.0.rb
 # Maybe add our own packaged version of ruby?
 #require "./adv2rooms.rb"  #classes are cool
@@ -855,10 +856,7 @@ class Room
     def darkness()
       puts "You feel your body grow colder and colder...".brown
       puts "Darkness overtakes you".brown
-      puts """
-      ---Game Over---
-
-      """.red
+      puts "-☠-Game Over-☠-".red
 
       print "Try again? [y/n]: ".red
       #input = prompt()
