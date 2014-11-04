@@ -6,7 +6,9 @@ A small text adventure originally made for a programming class.
 
 **Install instructions:**
 ---------------------
-- You don't, you just run it.
+- You need Ruby 1.9.x, 1.8.x is known to not work with random number generation
+
+- You don't install anything, you just run it.
 
 
 **Linux/Mac:**
