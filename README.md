@@ -1,4 +1,4 @@
-adventine
+Adventine
 =========
 
 A small text adventure originally made for a programming class.
