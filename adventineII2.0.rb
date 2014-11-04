@@ -856,7 +856,7 @@ class Room
     def darkness()
       puts "You feel your body grow colder and colder...".brown
       puts "Darkness overtakes you".brown
-      puts "- ☠ -Game Over- ☠ -".red
+      puts " ☠ Game Over ☠ ".red
 
       print "Try again? [y/n]: ".red
       #input = prompt()
