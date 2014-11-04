@@ -149,14 +149,24 @@ def classprocessing(choice)
       $fudged = 1
       classprocessing(1)
     else
-      puts "\nSo your stats are:" #each loop? #naw
+      merp = dfs + lck + mna + dmg
+			if merp > 5
+				puts "Whoops, that didn't add up, try again..."
+				$fudged = 1
+				classprocessing(1)
+			elsif merp < 5
+				puts "Whoops, that didn't add up, try again..."
+				$fudged = 1
+				classprocessing(1)
+			end
+			puts "\nSo your stats are:" #each loop? #naw
       puts "Strenth: #{dmg}"
       puts "Luck: #{lck}"
       puts "Mana: #{mna}"
       puts "Resilience: #{dfs}"
       puts "\n"
       #puts ""
-      print "Are these the stats you want? [y/n]: "
+			print "Are these the stats you want? [y/n]: "
       queryk = $stdin.gets.chomp.downcase
       if queryk == "y"
         puts "Okay then!"
