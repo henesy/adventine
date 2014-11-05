@@ -382,9 +382,7 @@ def helpwords()  ### add `inventory` and `class`
     use - utilize item
     quit - leave game
     """
-
 end
-
 
 def quitdialogue()
   print "Are you sure you want to quit? [y/n]: ".gray
