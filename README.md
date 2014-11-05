@@ -6,7 +6,7 @@ A small text adventure originally made for a programming class.
 
 **Install instructions:**
 ---------------------
-- You need Ruby 1.9.x, 1.8.x is known to not work with Adventine's die roller
+- You need Ruby 1.9.x+, 1.8.x is known to not work with Adventine's die roller
 
 - You don't install anything except *maybe* Ruby, you can just run adventineII2.0.rb
 
