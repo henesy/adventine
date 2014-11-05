@@ -261,7 +261,7 @@ def newuser() # user creation  #REWRITE AND PROCESS FFS # I DID IT
   else
   end
   print "What is your name?: ".gray
-  $userprofile['name'] = $stdin.gets.chomp.downcase
+  $userprofile['name'] = $stdin.gets.chomp #lolwut downcase
   puts "You must now select a class... " # class selection etc
   print """
   [1] Warrior
