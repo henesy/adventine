@@ -44,6 +44,44 @@
 #
 # -------- # Begin Global Variables # -------- #
 
+$loader = [5]
+$loader[0] = "|"
+$loader[1] = "/"
+$loader[2] = "-"
+$loader[3] = "|"
+$loader[4] = "\\"
+
+$version = "2.2.9"
+#$hoppington = ARGV[0]
+case ARGV[0]
+when "--help"
+  puts "Adventine v#{$version} by Sean Hinchee"
+  puts "Usage: adventineII2.0.rb [arguments] "
+  puts "\n--update    Update adventineII2.0.rb to the latest version"
+  puts "\n"
+  exit(0)
+when "--update"
+  quicktest = (system 'ping -q -c3 github.com >/dev/null')
+  if quicktest == true
+    puts "We're downloading the latest version and placing it in the current directory."
+  else
+    puts "Could not connect to github, check your internet connection?"
+    exit 1
+  end
+  system 'mv adventineII2.0.rb adventineII2.0.rb-OLD'
+  until ((system 'wget -q https://raw.githubusercontent.com/henesy/adventine/master/adventineII2.0.rb') == true)
+    $loader.each do |n|
+      print "\r#{n}" #never..actually..runs..file...too..small..and..stuff..
+    end
+  end
+  system 'chmod +x adventineII2.0.rb'
+  puts "Update complete!  :)"
+  exit 0
+else
+  #puts "#{$hoppington}"
+  puts ":3"
+end
+
 $room = "Cavern"
 $fudged = 0
 $points = 5
@@ -79,7 +117,7 @@ $taunts = [5]
 $taunts[0] = "You shout loud profanities, shaking your fist!"
 $taunts[1] = "You make a vague reference to something's mother..."
 $taunts[2] = "You adjust your trousers in an outwardly direction..."
-$taunts[3] = "You quickly scrawl a short book, using a nearby speck of dust for\nthe protagonist!"
+$taunts[3] = "You quickly scrawl a short book, using a nearby stick on slate..."
 $taunts[4] = "You shout loudly!"
 $taunts[5] = "You spit in an outwardly direction!"
 
