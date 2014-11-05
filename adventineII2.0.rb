@@ -182,16 +182,29 @@ class String #manipulate internal stuffs
   def gray;           "\033[37m#{self}\033[0m" end
 end
 
+def printprofile
+  puts "\nName: #{$userprofile['name']}".magenta
+  puts "Class: #{$userprofile['class']}".magenta
+  puts "\nStrength: #{$stats['atk']}".magenta
+  puts "Resilience: #{$stats['dfs']}".magenta
+  puts "Mana: #{$stats['mna']}".magenta
+  puts "Luck: #{$stats['lck']}".magenta
+end
+
+def clearscreen
+  system 'clear'
+end
+
 def classprocessing(choice)
   classname = $pclass #(make this global?)
   if choice == 1 #lotsa dialogue
     if $fudged == 0
-      puts "Greetings #{$userprofile['name']}...choose your stats..."
+      puts "\nGreetings #{$userprofile['name']}...choose your stats...".blue
     else
     end
-    puts "You have a total of #{$points} to spend:"
+    puts "You have a total of #{$points} to spend:".blue
 
-    print "Strength: ".gray
+    print "\nStrength: ".gray
     dmg = $stdin.gets.chomp.to_i
     print "Luck: ".gray
     lck = $stdin.gets.chomp.to_i
@@ -201,37 +214,37 @@ def classprocessing(choice)
     dfs = $stdin.gets.chomp.to_i
     $points_spent = dmg + lck + mna + dfs
     if $points_spent < $points_total && $points_spent > $points_total
-      puts "Whoops, that didn't add up, try again..."
+      puts "\nWhoops, that didn't add up, try again...\n".red
       $fudged = 1
       classprocessing(1)
     else
       merp = dfs + lck + mna + dmg
 			if merp > 5
-				puts "Whoops, that didn't add up, try again..."
+				puts "\nWhoops, that didn't add up, try again...\n".red
 				$fudged = 1
 				classprocessing(1)
 			elsif merp < 5
-				puts "Whoops, that didn't add up, try again..."
+				puts "\nWhoops, that didn't add up, try again...\n".red
 				$fudged = 1
 				classprocessing(1)
 			end
-			puts "\nSo your stats are:" #each loop? #naw
-      puts "Strenth: #{dmg}"
-      puts "Luck: #{lck}"
-      puts "Mana: #{mna}"
-      puts "Resilience: #{dfs}"
+			puts "\nSo your stats are:".gray #each loop? #naw
+      puts "Strenth: #{dmg}".gray
+      puts "Luck: #{lck}".gray
+      puts "Mana: #{mna}".gray
+      puts "Resilience: #{dfs}".gray
       puts "\n"
       #puts ""
 			print "Are these the stats you want? [y/n]: ".gray
       queryk = $stdin.gets.chomp.downcase
       if queryk == "y"
-        puts "Okay then!"
+        puts "Okay then!".blue
         puts "\n"
       elsif queryk == "yes"
-        puts "Okay then!"
+        puts "Okay then!".blue
         puts "\n"
       else
-        puts "Alright,let's reset your stats..."
+        puts "Alright,let's reset your stats...".red
         puts ""
         $fudged = 1
         classprocessing(1)
@@ -242,18 +255,21 @@ def classprocessing(choice)
   end
   pclass = $pclass
   if pclass  == 1 #warrior
-    $stats['dmg'] = 1
+    $userprofile['class'] = "Warrior"
+    $stats['atk'] = 3
     $stats['lck'] = 0
     $stats['mna'] = 0
     $stats['dfs'] = 2
   elsif pclass == 2 #thief
-    $stats['dmg'] = 1
+    $userprofile['class'] = "Thief"
+    $stats['atk'] = 2
     $stats['lck'] = 2
     $stats['mna'] = 0
-    $stats['dfs'] = 0
+    $stats['dfs'] = 1
   elsif pclass == 3 #wizard
-    $stats['dmg'] = 0
-    $stats['lck'] = 0
+    $userprofile['class'] = "Wizard"
+    $stats['atk'] = 0
+    $stats['lck'] = 2
     $stats['mna'] = 3
     $stats['dfs'] = 0
   end
@@ -280,6 +296,13 @@ def newuser() # user creation  #REWRITE AND PROCESS FFS # I DID IT
   newclassthing = $stdin.gets.chomp.to_i
   if newclassthing < 4 && newclassthing > 0
     $pclass = newclassthing #stahf
+    if newclassthing == 1
+      $userprofile['class'] = "Warrior"
+    elsif newclassthing == 2
+      $userprofile['class'] = "Thief"
+    elsif newclassthing == 3
+      $userprofile['class'] = "Wizard"
+    end
     print "Do you want to choose your stats? [y/n]: ".gray
     resultm = $stdin.gets.chomp.downcase
     if resultm == "yes"
@@ -312,15 +335,15 @@ class Sneaking
     if $sneakstate == 0
       case $pclass
       when 2
-        puts "You slink low to the ground and fade into the shadows..."
+        puts "\nYou slink low to the ground and fade into the shadows...".blue
       when 1
-        puts "You slump your shoulders and bend over, attempting stealth..."
+        puts "\nYou slump your shoulders and bend over, attempting stealth...".blue
       when 3
-        puts "You crouch and begin shuffling along the ground..."
+        puts "\nYou crouch and begin shuffling along the ground...".blue
       end
       $sneakstate = 1
     elsif $sneakstate == 1
-      puts "You stand up, casting aside any concept of the element of surprise..."
+      puts "\nYou stand up, casting aside any concept of the element of surprise...".blue
       $sneakstate = 0
     else
       print "Error in \"class Sneaking\""
@@ -370,9 +393,10 @@ end
 
 def helpwords()  ### add `inventory` and `class`
   puts """
-  	help - show this list
-  	inventory - show inventory
-  	class - show class details
+    help - show this list
+    clear - clear the screen
+    inventory - show inventory
+    profile - show player details
     north - move north
     east - move east
     south - move south
@@ -396,11 +420,11 @@ def quitdialogue()
 end
 
 def prompt()
-  @@processing = Processing.new()
+  processing = Processing.new()
   print "\e[31m\n\"#{$room}\"\e[92m>\e[36m "
   input = $stdin.gets.chomp.downcase
   #	input2 = input.split  #nope.
-  @@processing.test(input)
+  processing.test(input)
   print "\e[37m" #default reset?
   return input
 end
@@ -545,9 +569,9 @@ class Creeps #the beasties
     # use rand(1..3) or something to sample attacks
     case @@currentmob
     when "Wolf"
-      puts "The wolf lunges at you!"
+      puts "\nThe wolf lunges at you!".green
 			output = (roll(3) - $stats['tmp']) + @@atk + @@lck - $stats['dfs']
-			puts "The wolf deals #{output} damage to you!"
+			puts "The wolf deals #{output} damage to you!".red
 			$stats['hp'] = $stats['hp'] - output
       $stats['tmp'] = 0 #reset for global
     when "Bear"
@@ -566,7 +590,7 @@ class Creeps #the beasties
     case @@currentmob
     when "Wolf"
       output = (damage - @@dfs) + $stats['atk']
-			puts "The wolf whimpers, wounds showing..."
+			puts "The wolf whimpers, wounds showing...".blue
 			@@hp = @@hp - ((damage - @@dfs) + $stats['atk'])
     when "Bear"
     when "Will"
@@ -639,7 +663,7 @@ class Creeps #the beasties
       case @@currentmob
       when "Wolf"
         user.taunt()
-        puts "The wolf growls at you and prepares to lunge!"
+        puts "The wolf growls at you and prepares to lunge!".green
         mresponse.attack()
         mresponse.engage_utility() #test if necessary ##is
       when "Bear"
@@ -655,7 +679,7 @@ class Creeps #the beasties
       case @@currentmob
       when "Wolf"
         $stats['tmp'] = $stats['tmp'] + 2
-        puts "You bend your knees and watch the enemy closely!"
+        puts "You bend your knees and watch the enemy closely!".green
         mresponse.attack()
         mresponse.engage_utility()
       when "Bear"
@@ -743,7 +767,7 @@ class Creeps #the beasties
   def defeated
     case @@currentmob
     when "Wolf"
-      puts "The wolf keels over, twitches once, then is still..."
+      puts "The wolf keels over, twitches once, then is still...".green
       $engaged = 0
       $east_wolf = 0
       $estate['Wolf'] = 0
@@ -1004,10 +1028,10 @@ class Room
       input = prompt() #NEVER FORGETTI
 
     end
-  end #class end
+end #class end
 
 
-  class Processing #write .test
+class Processing #write .test
     def test(words) #edit
       @@combat = Combat.new() #careful...
       @@mroom = Room.new()
@@ -1034,6 +1058,9 @@ class Room
         prompt() #easy peasy
       when "quit"
         quitdialogue()
+      when "clear"
+        clearscreen()
+        prompt()
       when "attack"
         @@combat.process() #argh #fixed
         prompt()
@@ -1045,6 +1072,9 @@ class Room
         prompt()
       when "inventory"
         @@invent.dialogue()
+        prompt()
+      when "profile"
+        printprofile()
         prompt()
       when "use"
         @@muse.prompt()
@@ -1115,12 +1145,12 @@ class Room
       end # case end
       return toreturn
     end # test() end
-  end
+end
 
   #class Combat  #derp
   #end
 
-  class Combat  #check combatdialogue
+class Combat  #check combatdialogue
     #def initialize #definitions for class vars  #makeitstop
     #@@fdbk = Combat.new()
     #end
@@ -1131,7 +1161,7 @@ class Room
       howdoi = $room
       #@@creepz = Creeps.new("Bloop")
       @@wolf = Creeps::Wolf.new("Wolf")
-      nothing = "There's nothing to fight\n"
+      nothing = "\nThere's nothing to fight...\n".blue
       case howdoi
       when "Cavern"
         puts "#{nothing}"
@@ -1195,18 +1225,18 @@ class Room
 
       [1] Item
 
-      """ #abilities later.... (cspecial)
+      """.gray #abilities later.... (cspecial)
 
       print ": ".gray
       stuff = $stdin.gets.chomp.to_i
       if stuff > (-1) && stuff < 2 #temp values
         if stuff == 0
           output = roll(5) + $stats['atk'] #+ $stats['tmp']
-					puts "\nYou lunge out with your fists, striking out!"
-					puts "You deal #{output} damage!"
+					puts "\nYou lunge out with your fists, striking out!".blue
+					puts "You deal #{output} damage!".red
 					return output
           if stuff == 1
-            puts "Items are not fully integrated yet...sorry"
+            puts "Items are not fully integrated yet...sorry".gray
             cmbt.fight()
 						output = 0
           else
@@ -1262,10 +1292,10 @@ class Room
     end
     #input = prompt() #depreated for combat
     # hashes for enemies?
-  end # def end
+end # def end
   #end #class end
 
-  def start ()
+def start ()
     mroom = Room.new()  #short for ManageRoom
     $inventory[0] = "Torch"
     if $fresh == 0
@@ -1289,6 +1319,6 @@ class Room
       end # case end
 
     end #while end
-  end #start end
+end #start end
 
   start()
