@@ -16,7 +16,9 @@ A small text adventure originally made for a programming class.
 In terminal type:
 
 	ruby adventineII2.0.rb
-	**or**
+
+**or**
+
 	./adventineII2.0.rb
 
 - Make sure you are in the same directory as the file
