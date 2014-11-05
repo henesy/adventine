@@ -12,7 +12,7 @@
 ### Adventine was originally created as a programming class project
 #
 #
-# Current Version: 2.2.8
+# Current Version (alpha): 2.2.9
 # 2.2.0: north room, basic dialogue
 # 2.2.1: all 1g rooms, medium dialogue
 # 2.2.2: user creation dialogue (kinda)
@@ -23,7 +23,8 @@
 # 2.2.7: bugfixes with movement, added combat basics and loop, overhauled
 # 	the framework for creatures, added creatures and stats and player classes
 # 2.2.8: combat is complete implemented! Death can occur through combat
-#
+# 2.2.9: almost done, all requirements for 2.3 are down, finalize commands...
+#   finalize extra mob, add more rooms, then 2.3 will drop...
 #
 # ----------Braining----------
 # Rooms: Cavern, South Wall, Intersection, East Forest Edge
@@ -146,13 +147,13 @@ def classprocessing(choice)
     end
     puts "You have a total of #{$points} to spend:"
 
-    print "Strength: "
+    print "Strength: ".gray
     dmg = $stdin.gets.chomp.to_i
-    print "Luck: "
+    print "Luck: ".gray
     lck = $stdin.gets.chomp.to_i
-    print "Mana: "
+    print "Mana: ".gray
     mna = $stdin.gets.chomp.to_i
-    print "Resilience: "
+    print "Resilience: ".gray
     dfs = $stdin.gets.chomp.to_i
     $points_spent = dmg + lck + mna + dfs
     if $points_spent < $points_total && $points_spent > $points_total
@@ -177,7 +178,7 @@ def classprocessing(choice)
       puts "Resilience: #{dfs}"
       puts "\n"
       #puts ""
-			print "Are these the stats you want? [y/n]: "
+			print "Are these the stats you want? [y/n]: ".gray
       queryk = $stdin.gets.chomp.downcase
       if queryk == "y"
         puts "Okay then!"
@@ -221,7 +222,7 @@ def newuser() # user creation  #REWRITE AND PROCESS FFS # I DID IT
     puts "\e[33m Welcome to the world of\e[35m Adventine!\e[37m" #colors!
   else
   end
-  print "What is your name?: "
+  print "What is your name?: ".gray
   $userprofile['name'] = $stdin.gets.chomp.downcase
   puts "You must now select a class... " # class selection etc
   print """
@@ -231,11 +232,11 @@ def newuser() # user creation  #REWRITE AND PROCESS FFS # I DID IT
 
   """
 
-  print "Class Selection: "
+  print "Class Selection: ".gray
   newclassthing = $stdin.gets.chomp.to_i
   if newclassthing < 4 && newclassthing > 0
     $pclass = newclassthing #stahf
-    print "Do you want to choose your stats? [y/n]: "
+    print "Do you want to choose your stats? [y/n]: ".gray
     resultm = $stdin.gets.chomp.downcase
     if resultm == "yes"
       #resultm = "y" #useless now
@@ -310,9 +311,9 @@ def combatdialogue() #combatdialogue() is called by combat.dialogue
   [3] Dodge
   [4] Run Away
 
-  """
+  """.gray
 
-  print "\n: "
+  print "\n: ".gray
   input = $stdin.gets.chomp.to_i #fix this cause letters
   if input > (-1) && input < 5
     return input
@@ -342,7 +343,7 @@ end
 
 
 def quitdialogue()
-  print "Are you sure you want to quit? [y/n]: "
+  print "Are you sure you want to quit? [y/n]: ".gray
   input = $stdin.gets.chomp.downcase
   if input == "y"
     print "\e[0m"
@@ -368,7 +369,7 @@ class Inventory
 
   def dialogue
     invent = Inventory.new()
-    print "Do you want to view your inventory? [y/n]: "
+    print "Do you want to view your inventory? [y/n]: ".gray
     resp = $stdin.gets.chomp.downcase
     if resp == "yes"
       invent.show()
@@ -444,7 +445,7 @@ class Creeps #the beasties
     case mob #only handles text....
     when "Wolf"
       creepz = Creeps::Wolf.new("Wolf")
-      puts "\nA vicious wolf stands before you menacingly!" #works
+      puts "\nA vicious wolf stands before you menacingly!".red #works
       @@currentmob = "Wolf"
       ###puts "DEBUG: in engage: #{@@currentmob}"
     when "Bear"
@@ -471,12 +472,12 @@ class Creeps #the beasties
   def engage_utility() #hotfix ## fixed
 		@@mroom = Room.new()
 		if $stats['hp'] > 0
-			puts "Your HP: #{$stats['hp']}"
+			puts "\nYour HP: #{$stats['hp']}".cyan
 		else
 			@@mroom.darkness
 		end
 		if @@hp > 0
-			puts "#{@@currentmob}\'s HP: #{@@hp}"
+			puts "#{@@currentmob}\'s HP: #{@@hp}".cyan
 		else
 			@@creepz.defeated()
 			prompt()
@@ -777,7 +778,7 @@ class Use  #inventory processing
   def prompt
     @@invent = Inventory.new()
     @@usage = Use.new()
-    print "From Inventory [1]\nIn Room [2]\n\n: "
+    print "From Inventory [1]\nIn Room [2]\n\n: ".gray
     answer = $stdin.gets.chomp.to_i
     if answer > 0 && answer < 3
       if answer == 2
@@ -883,7 +884,7 @@ class Room
       $room = "Cavern"
       #$inventory[1] = "Torch" #reasons
       mroom = Room.new()  #short for ManageRoom
-      puts "You are in a cold cavern".brown
+      puts "\nYou are in a cold cavern".brown
       puts "There is a dim light shining from the north".brown
       puts "There is a chilly breeze from the west".brown
       puts "There is darkness to the east".brown
@@ -907,11 +908,11 @@ class Room
 
     def darkness()
       @@mroom = Room.new()
-      puts "You feel your body grow colder and colder...".brown
+      puts "\nYou feel your body grow colder and colder...".brown
       puts "Darkness overtakes you".brown
       puts " ☠ Game Over ☠ ".red
 
-      print "Try again? [y/n]: ".red
+      print "Try again? [y/n]: ".gray.red
       #input = prompt()
 			input = $stdin.gets.chomp.downcase
       if input == "y"
@@ -930,7 +931,7 @@ class Room
 
     def northlight()
       $room = "Intersection"
-      puts "Warmth flows through your body".brown
+      puts "\nWarmth flows through your body".brown
       puts "A small house is visible to the north".brown
       puts "Roads lead both west and east".brown
       input = prompt()
@@ -938,7 +939,7 @@ class Room
 
     def southwall()
       $room = "South Wall"
-      puts "As you look closely at the wall you notice".brown
+      puts "\nAs you look closely at the wall you notice".brown
       puts "a small hairline crack runs from the ceiling to the floor".brown
       #puts "the floor"
       input = prompt()
@@ -950,7 +951,7 @@ class Room
       $room = "East Forest Edge"
       mcreep = Creeps::Wolf.new("Wolf")
       ## DAMMIT I HAVE TO UPDATE EVERYTHING
-      puts "Tall trees tower over you".brown
+      puts "\nTall trees tower over you".brown
       #puts "#{$estate['Wolf']}" #testing hash format
       if $east_wolf == 1
         #puts "A vicious wolf appears!" #migrated to creeps
@@ -1121,7 +1122,7 @@ class Room
     # 	[3] Engage it!
     # 	[4] (Class Ability)
     # 	"""
-    # 	print ": "
+    # 	print ": ".gray
     # 	@@fdbk.feedback()
     # end
     # def feedback
@@ -1132,7 +1133,7 @@ class Room
     # 		if thing < 5 && thing > 0
     # 		@@fdbk.engage(thingy)
     # 		else
-    # 		print "Try a real option: "
+    # 		print "Try a real option: ".gray
     # 		spare = 0
     # 		@@fdbk.engage(spare)
     # 		end
@@ -1146,7 +1147,7 @@ class Room
 
     def fight
       cmbt = Combat.new()
-      puts "What would you like to attack with?: "
+      puts "\nWhat would you like to attack with?: ".gray
       puts """
       [0] Unarmed
 
@@ -1154,12 +1155,12 @@ class Room
 
       """ #abilities later.... (cspecial)
 
-      print ": "
+      print ": ".gray
       stuff = $stdin.gets.chomp.to_i
       if stuff > (-1) && stuff < 2 #temp values
         if stuff == 0
           output = roll(5) + $stats['atk'] #+ $stats['tmp']
-					puts "You lung out with your fists, striking out!"
+					puts "\nYou lunge out with your fists, striking out!"
 					puts "You deal #{output} damage!"
 					return output
           if stuff == 1
