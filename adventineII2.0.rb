@@ -71,6 +71,7 @@ when "--update"
   system 'mv adventineII2.0.rb adventineII2.0.rb-OLD'
   until ((system 'wget -q https://raw.githubusercontent.com/henesy/adventine/master/adventineII2.0.rb') == true)
     $loader.each do |n|
+      sleep 0.2
       print "\r#{n}" #never..actually..runs..file...too..small..and..stuff..
     end
   end
