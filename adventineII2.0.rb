@@ -268,13 +268,13 @@ def newuser() # user creation  #REWRITE AND PROCESS FFS # I DID IT
   end
   print "What is your name?: ".gray
   $userprofile['name'] = $stdin.gets.chomp #lolwut downcase
-  puts "You must now select a class... " # class selection etc
+  puts "\nYou must now select a class... ".blue # class selection etc
   print """
   [1] Warrior
   [2] Thief
   [3] Wizard
 
-  """
+  """.gray
 
   print "Class Selection: ".gray
   newclassthing = $stdin.gets.chomp.to_i
@@ -683,7 +683,7 @@ class Creeps #the beasties
           mresponse.attack()
           mresponse.engage_utility()
         else
-          puts "You bob and weave out of the way and sprint away!"
+          puts "\nYou bob and weave and sprint away!".cyan
           $engaged = 0
           if $room == "East Forest Edge"
             @@mroom.northlight()
