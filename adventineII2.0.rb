@@ -43,6 +43,7 @@
 #
 #
 # -------- # Begin Global Variables # -------- #
+$version = "2.2.9"
 
 $loader = [5]
 $loader[0] = "|"
@@ -51,12 +52,20 @@ $loader[2] = "-"
 $loader[3] = "|"
 $loader[4] = "\\"
 
-$version = "2.2.9"
+def loadwheel() #lol@this
+  4.times do
+    $loader.each do |n|
+      sleep 0.1
+      print "\r#{n}"
+    end
+  end
+  print "\r \n"
+end
 #$hoppington = ARGV[0]
 case ARGV[0]
 when "--help"
   puts "Adventine v#{$version} by Sean Hinchee"
-  puts "Usage: adventineII2.0.rb [arguments] "
+  puts "\nUsage: adventineII2.0.rb [arguments] \n"
   puts "\n--update    Update adventineII2.0.rb to the latest version"
   puts "\n"
   exit(0)
@@ -69,12 +78,8 @@ when "--update"
     exit 1
   end
   system 'mv adventineII2.0.rb adventineII2.0.rb-OLD'
-  until ((system 'wget -q https://raw.githubusercontent.com/henesy/adventine/master/adventineII2.0.rb') == true)
-    $loader.each do |n|
-      sleep 0.2
-      print "\r#{n}" #never..actually..runs..file...too..small..and..stuff..
-    end
-  end
+  system 'wget -q https://raw.githubusercontent.com/henesy/adventine/master/adventineII2.0.rb'
+  loadwheel()
   system 'chmod +x adventineII2.0.rb'
   puts "Update complete!  :)"
   exit 0
