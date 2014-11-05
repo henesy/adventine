@@ -30,6 +30,6 @@ In terminal type:
 
 - See Linux/Mac steps
 
-- **Warning**: Windows will not be able to use the "--update" argument unless you have some form of "wget" installed that can be used by the command prompt
+- **Warning:** Windows will not be able to use the "--update" argument unless you have some form of "wget" installed that can be used by the command prompt
 
-- **Warning**: Windows may or may not be able to run Adventine without invoking adventineII2.0.rb using "ruby"
+- **Warning:** Windows may or may not be able to run Adventine without invoking adventineII2.0.rb using "ruby"
