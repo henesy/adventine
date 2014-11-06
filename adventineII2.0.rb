@@ -37,10 +37,11 @@
 # • limited inventory (use `each` loops) #done
 # • color code output! #done
 # • levelling/stat increase XP build regular check system?
-# • A room class :: rewrite might be in order....
+# • A room class :: rewrite might be in order.... #meh
 #
-# v2.1 reqs: 5 rooms, all commands functional
-#
+# v2.3 reqs: 5 rooms, all commands functional
+# => commands: check
+# => rooms:
 #
 # -------- # Begin Global Variables # -------- #
 $version = "2.2.9"
@@ -48,7 +49,7 @@ $version = "2.2.9"
 $loader = [5]
 $loader[0] = "|"
 $loader[1] = "/"
-$loader[2] = "-"
+$loader[2] = "-*-"
 $loader[3] = "|"
 $loader[4] = "\\"
 
@@ -118,6 +119,26 @@ $inventory = [20] #must be crawled, therefore: array
 $fresh = 0
 $pclass = ""
 $engaged = 0
+
+## -- Zone for Item State Hash (experimental)
+# hash.reject {|key ,value| key == "three" }.each{...}
+# ^from stack overflow, filter out "Nowhere", then each loop through
+$ilocation = {
+  "Torch" => "Nowhere"
+}
+# Drop command will be done, just point to and reset value
+# Room.itemscan should be implemented to insert optional prints for ilocations
+# Rooms should run before dialogue to test for items, making them interactive
+# Over-ride use dialog and combat dialog, forward combat => use
+# maybe make a Use.attack to call this, same code more or less
+##
+# Room.here is an option, running an each against $ilocation
+# Room.here returns true for each item that exists, then print output using
+#   if's or case's, still run Room.here in Use
+##
+# Or just use itemscan and print items in the room as per room with Use in
+#   context with room/surroundings
+## --
 
 $taunts = [5]
 $taunts[0] = "You shout loud profanities, shaking your fist!"
