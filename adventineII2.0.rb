@@ -49,7 +49,7 @@ $version = "2.2.9"
 $loader = [5]
 $loader[0] = "|"
 $loader[1] = "/"
-$loader[2] = "-*-"
+$loader[2] = "-"
 $loader[3] = "|"
 $loader[4] = "\\"
 
