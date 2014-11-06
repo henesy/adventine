@@ -12,7 +12,7 @@
 ### Adventine was originally created as a programming class project
 #
 #
-# Current Version (alpha): 2.2.9
+# Current Version (alpha): 2.2.9.1
 # 2.2.0: north room, basic dialogue
 # 2.2.1: all 1g rooms, medium dialogue
 # 2.2.2: user creation dialogue (kinda)
@@ -25,6 +25,7 @@
 # 2.2.8: combat is complete implemented! Death can occur through combat
 # 2.2.9: almost done, all requirements for 2.3 are down, finalize commands...
 #   finalize extra mob, add more rooms, then 2.3 will drop...
+# 2.2.9.1: bugfixes (hopefully), added interactive items and some new frameworks
 #
 # ----------Braining----------
 # Rooms: Cavern, South Wall, Intersection, East Forest Edge
@@ -46,7 +47,7 @@
 # -------- # Begin Global Variables # -------- #
 #require 'sinatra'
 #get '/' do
-$version = "2.2.9"
+$version = "2.2.9.1"
 
 $loader = [5]
 $loader[0] = "|"
@@ -90,7 +91,7 @@ else
   #puts "#{$hoppington}"
   puts ":3"
 end
-
+$southcracked=0
 $room = "Cavern"
 $fudged = 0
 $points = 5
@@ -117,7 +118,7 @@ $blank = "sweetie bot"
 # Warrior, Thief, Wizard
 #$inventory = {} #more..hashes? maybe? sleep on this one ##slept on it
 $inventory = [20] #must be crawled, therefore: array
-
+$torchlight = false
 $fresh = 0
 $pclass = ""
 $engaged = 0
@@ -126,8 +127,11 @@ $engaged = 0
 # hash.reject {|key ,value| key == "three" }.each{...}
 # ^from stack overflow, filter out "Nowhere", then each loop through
 $ilocation = {
-  "Torch" => "Nowhere"
-}
+  "Torch" => "Nowhere",
+  "Wedge" => "Nowhere",
+  "Knife" => "Nowhere"
+} #Inventory and Nowhere are the only two non-room states
+
 # Drop command will be done, just point to and reset value
 # Room.itemscan should be implemented to insert optional prints for ilocations
 # Rooms should run before dialogue to test for items, making them interactive
@@ -143,12 +147,12 @@ $ilocation = {
 ## --
 
 $taunts = [5]
-$taunts[0] = "You shout loud profanities, shaking your fist!".blue
-$taunts[1] = "You make a vague reference to something's mother...".blue
-$taunts[2] = "You adjust your trousers in an outwardly direction...".blue
-$taunts[3] = "You quickly scrawl a short book, using a nearby stick on slate...".blue
-$taunts[4] = "You shout loudly!".blue
-$taunts[5] = "You spit in an outwardly direction!".blue
+$taunts[0] = "You shout loud profanities, shaking your fist!"
+$taunts[1] = "You make a vague reference to something's mother..."
+$taunts[2] = "You adjust your trousers in an outwardly direction..."
+$taunts[3] = "You quickly scrawl a short book, using a nearby stick on slate..."
+$taunts[4] = "You shout loudly!"
+$taunts[5] = "You spit in an outwardly direction!"
 
 #enemies block  # use $enemies.sample
 $enemies = [10] # need match-based enemy processing
@@ -864,10 +868,24 @@ end
 
 class Use  #inventory processing
 
+  def initialize
+    @@nouse = "\nYou can't use that here..."
+    @@nohas = "\nYou don't have that!" #unnecessary with Use.itest
+  end
+
+  def itest(item)
+      if $ilocation[item] != "Inventory"
+        puts "\nYou don't have a #{item}!".red
+        return false
+      else
+        return true
+      end
+  end
+
   def prompt
     @@invent = Inventory.new()
     @@usage = Use.new()
-    print "From Inventory [1]\nIn Room [2]\n\n: ".gray
+    print "\nFrom Inventory [1]\nIn Room [2]\n\n: ".gray
     answer = $stdin.gets.chomp.to_i
     if answer > 0 && answer < 3
       if answer == 2
@@ -883,8 +901,44 @@ class Use  #inventory processing
   end #def end
 
   def inventory # yeah we do things here
+    @@usem = Use.new()
     @@invent = Inventory.new()
     @@invent.show()
+    print "Item: ".green
+    item = $stdin.gets.chomp.downcase
+    case item
+    when "torch" #purposefully downcased
+      present = @@usem.itest("Torch")
+      if present == true
+      puts "\nA dim glow emanates from the torch in your hand, the room is lit.".gray
+      $torchlight = true
+      else
+        puts "#{@@nohas}"
+      end
+      return "Torch"
+    when "wedge"
+        present = @@usem.itest("Wedge")
+        if present == true
+          case $room
+          when "South Wall"
+            if $southcracked == 0
+            puts "With a grunt, you push the wedge into the crack and push the crack open!".gray
+            puts "You can see a dim light through the crack...".gray
+            $southcracked = 1
+            else
+              puts "#{@@nouse}"
+            end
+          else
+            puts "#{@@nouse}"
+          end
+        else
+          #puts "#{@@nohas}"
+        end
+    else
+      puts "#{@@nohas}".red
+    end
+
+    # stuff! use in user.fight [1] as well!
   end
 
   def room # room...specifics? case structures? ew....
@@ -1275,7 +1329,7 @@ class Combat  #check combatdialogue
     end
 
     def taunt
-      puts "#{$taunts.sample}"
+      puts "#{$taunts.sample}".blue
     end
     #def creepp #creep processing
     #end
@@ -1321,6 +1375,7 @@ end # def end
 def start ()
     mroom = Room.new()  #short for ManageRoom
     $inventory[0] = "Torch"
+    $ilocation['Torch'] = "Inventory"
     if $fresh == 0
       newuser()
     else
