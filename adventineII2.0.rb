@@ -143,12 +143,12 @@ $ilocation = {
 ## --
 
 $taunts = [5]
-$taunts[0] = "You shout loud profanities, shaking your fist!"
-$taunts[1] = "You make a vague reference to something's mother..."
-$taunts[2] = "You adjust your trousers in an outwardly direction..."
-$taunts[3] = "You quickly scrawl a short book, using a nearby stick on slate..."
-$taunts[4] = "You shout loudly!"
-$taunts[5] = "You spit in an outwardly direction!"
+$taunts[0] = "You shout loud profanities, shaking your fist!".blue
+$taunts[1] = "You make a vague reference to something's mother...".blue
+$taunts[2] = "You adjust your trousers in an outwardly direction...".blue
+$taunts[3] = "You quickly scrawl a short book, using a nearby stick on slate...".blue
+$taunts[4] = "You shout loudly!".blue
+$taunts[5] = "You spit in an outwardly direction!".blue
 
 #enemies block  # use $enemies.sample
 $enemies = [10] # need match-based enemy processing
