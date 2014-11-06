@@ -44,6 +44,8 @@
 # => rooms:
 #
 # -------- # Begin Global Variables # -------- #
+#require 'sinatra'
+#get '/' do
 $version = "2.2.9"
 
 $loader = [5]
@@ -1343,3 +1345,4 @@ def start ()
 end #start end
 
   start()
+#end
