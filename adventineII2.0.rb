@@ -264,10 +264,10 @@ def classprocessing(choice)
       #puts ""
 			print "Are these the stats you want? [y/n]: ".gray
       queryk = $stdin.gets.chomp.downcase
+      if queryk == "yes"
+        queryk = "y"
+      end
       if queryk == "y"
-        puts "Okay then!".blue
-        puts "\n"
-      elsif queryk == "yes"
         puts "Okay then!".blue
         puts "\n"
       else
@@ -333,9 +333,12 @@ def newuser() # user creation  #REWRITE AND PROCESS FFS # I DID IT
     print "Do you want to choose your stats? [y/n]: ".gray
     resultm = $stdin.gets.chomp.downcase
     if resultm == "yes"
+      resultm = "y"
+    else
+    end
+
+    if resultm == "y"
       #resultm = "y" #useless now
-      classprocessing(1)
-    elsif resultm == "y"
       classprocessing(1)
     else
       puts ""
@@ -1095,7 +1098,15 @@ class Room
       mcreep = Creeps::Wolf.new("Wolf")
       ## DAMMIT I HAVE TO UPDATE EVERYTHING
       puts "\nTall trees tower over you".brown
+
+      #puts "A small path leads to the east"
+      #puts "To the west the underbrush thickens, preventing passage"
+      #puts "To the north lies a dirt path into a thicket"
+      #puts "To the south a length of footprints trail"
+      ## Not Yet
+
       #puts "#{$estate['Wolf']}" #testing hash format
+
       if $east_wolf == 1
         #puts "A vicious wolf appears!" #migrated to creeps
         $engaged = 1
@@ -1103,8 +1114,30 @@ class Room
       else
       end
       input = prompt() #NEVER FORGETTI
-
     end
+
+    def cranny()
+      $room = "Cranny"
+      if $torchlight == 0
+        puts "You are in a small, cold, wet, and dark cavern"
+      else
+        puts "You are in a small, cold, wet cavern"
+      end
+      input = prompt()
+    end
+
+    def thicket()
+      $room = "Thicket"
+      puts ""
+      input = prompt()
+    end
+
+    def footprints()
+      $room = "Foot Print Trail"
+      puts ""
+      input = prompt()
+    end
+
 end #class end
 
 
@@ -1248,6 +1281,8 @@ class Combat  #check combatdialogue
         puts "#{nothing}"
       when "East Forest Edge"
         @@wolf.engage("Wolf")
+      else
+        puts "#{nothing}"
       end
     end
 
