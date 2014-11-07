@@ -222,61 +222,58 @@ def clearscreen
   system 'clear'
 end
 
+def classprompt
+  if $fudged == 0
+    puts "\nGreetings #{$userprofile['name']}...choose your stats...".blue
+  else
+  end
+  puts "You have a total of #{$points} to spend:".blue
+
+  print "\nStrength: ".gray
+  dmg = $stdin.gets.chomp.to_i
+  print "Luck: ".gray
+  lck = $stdin.gets.chomp.to_i
+  print "Mana: ".gray
+  mna = $stdin.gets.chomp.to_i
+  print "Resilience: ".gray
+  dfs = $stdin.gets.chomp.to_i
+  $points_spent = dmg + lck + mna + dfs
+  if $points_spent < $points_total || $points_spent > $points_total
+    puts "\nWhoops, that didn't add up, try again...\n".red
+    $fudged = 1
+    classprocessing(1)
+  else
+    puts "\nSo your stats are:".gray #each loop? #naw
+    puts "Strenth: #{dmg}".gray
+    puts "Luck: #{lck}".gray
+    puts "Mana: #{mna}".gray
+    puts "Resilience: #{dfs}".gray
+    puts "\n"
+    puts ""
+    #printprofile()
+    print "Are these the stats you want? [y/n]: ".gray
+    queryk = $stdin.gets.chomp.downcase
+    if queryk == "yes"
+      queryk = "y"
+    end
+
+    if queryk == "y"
+      puts "Okay then!".blue
+      puts "\n"
+    else
+      puts "Alright,let's reset your stats...".red
+      puts ""
+      $fudged = 1
+      classprocessing(1)
+    end
+
+  end
+end
+
 def classprocessing(choice)
   classname = $pclass #(make this global?)
   if choice == 1 #lotsa dialogue
-    if $fudged == 0
-      puts "\nGreetings #{$userprofile['name']}...choose your stats...".blue
-    else
-    end
-    puts "You have a total of #{$points} to spend:".blue
-
-    print "\nStrength: ".gray
-    dmg = $stdin.gets.chomp.to_i
-    print "Luck: ".gray
-    lck = $stdin.gets.chomp.to_i
-    print "Mana: ".gray
-    mna = $stdin.gets.chomp.to_i
-    print "Resilience: ".gray
-    dfs = $stdin.gets.chomp.to_i
-    $points_spent = dmg + lck + mna + dfs
-    if $points_spent < $points_total && $points_spent > $points_total
-      puts "\nWhoops, that didn't add up, try again...\n".red
-      $fudged = 1
-      classprocessing(1)
-    else
-      merp = dfs + lck + mna + dmg
-			if merp > 5
-				puts "\nWhoops, that didn't add up, try again...\n".red
-				$fudged = 1
-				classprocessing(1)
-			elsif merp < 5
-				puts "\nWhoops, that didn't add up, try again...\n".red
-				$fudged = 1
-				classprocessing(1)
-			end
-			puts "\nSo your stats are:".gray #each loop? #naw
-      puts "Strenth: #{dmg}".gray
-      puts "Luck: #{lck}".gray
-      puts "Mana: #{mna}".gray
-      puts "Resilience: #{dfs}".gray
-      puts "\n"
-      #puts ""
-			print "Are these the stats you want? [y/n]: ".gray
-      queryk = $stdin.gets.chomp.downcase
-      if queryk == "yes"
-        queryk = "y"
-      end
-      if queryk == "y"
-        puts "Okay then!".blue
-        puts "\n"
-      else
-        puts "Alright,let's reset your stats...".red
-        puts ""
-        $fudged = 1
-        classprocessing(1)
-      end
-    end
+    classprompt()
   else
     print ""
   end
