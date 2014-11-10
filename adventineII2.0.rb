@@ -48,6 +48,7 @@
 #require 'sinatra'
 #get '/' do
 $version = "2.2.9.1"
+$choosing = 1
 
 $loader = [5]
 $loader[0] = "|"
@@ -260,6 +261,10 @@ def classprompt
     if queryk == "y"
       puts "Okay then!".blue
       puts "\n"
+      $stats['atk'] = dmg
+      $stats['lck'] = lck
+      $stats['mna'] = mna
+      $stats['dfs'] = dfs
     else
       puts "Alright,let's reset your stats...".red
       puts ""
@@ -278,24 +283,27 @@ def classprocessing(choice)
     print ""
   end
   pclass = $pclass
-  if pclass  == 1 #warrior
-    $userprofile['class'] = "Warrior"
-    $stats['atk'] = 3
-    $stats['lck'] = 0
-    $stats['mna'] = 0
-    $stats['dfs'] = 2
-  elsif pclass == 2 #thief
-    $userprofile['class'] = "Thief"
-    $stats['atk'] = 2
-    $stats['lck'] = 2
-    $stats['mna'] = 0
-    $stats['dfs'] = 1
-  elsif pclass == 3 #wizard
-    $userprofile['class'] = "Wizard"
-    $stats['atk'] = 0
-    $stats['lck'] = 2
-    $stats['mna'] = 3
-    $stats['dfs'] = 0
+  if $choosing == 0
+    if pclass  == 1 #warrior
+      $userprofile['class'] = "Warrior"
+      $stats['atk'] = 3
+      $stats['lck'] = 0
+      $stats['mna'] = 0
+      $stats['dfs'] = 2
+    elsif pclass == 2 #thief
+      $userprofile['class'] = "Thief"
+      $stats['atk'] = 2
+      $stats['lck'] = 2
+      $stats['mna'] = 0
+      $stats['dfs'] = 1
+    elsif pclass == 3 #wizard
+      $userprofile['class'] = "Wizard"
+      $stats['atk'] = 0
+      $stats['lck'] = 2
+      $stats['mna'] = 3
+      $stats['dfs'] = 0
+    end
+  else
   end
 	$stats['hp'] = 10
 end
@@ -331,14 +339,21 @@ def newuser() # user creation  #REWRITE AND PROCESS FFS # I DID IT
     resultm = $stdin.gets.chomp.downcase
     if resultm == "yes"
       resultm = "y"
+      $choosing = 1
+    elsif resultm == "no"
+      resulm = "n"
     else
     end
-
     if resultm == "y"
       #resultm = "y" #useless now
       classprocessing(1)
+      $choosing = 1
+    elsif resultm == "n"
+      $choosing = 0
+      classprocessing(0)
     else
       puts ""
+      $choosing = 0
       classprocessing(0)
     end
     #classprocessing($pclass) #wtf?
