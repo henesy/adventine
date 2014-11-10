@@ -48,8 +48,7 @@
 #require 'sinatra'
 #get '/' do
 $version = "2.2.9.1"
-$choosing = 1
-
+$windows = 0
 $loader = [5]
 $loader[0] = "|"
 $loader[1] = "/"
@@ -67,31 +66,39 @@ def loadwheel() #lol@this
   print "\r \n"
 end
 #$hoppington = ARGV[0]
+#puts "DEBUG: ARGV[0]: #{ARGV[0]}, ARGV[1]: #{ARGV[1]}, ARGV[2]: #{ARGV[2]}"
 case ARGV[0]
 when "--help"
   puts "Adventine v#{$version} by Sean Hinchee"
   puts "\nUsage: adventineII2.0.rb [arguments] \n"
-  puts "\n--update    Update adventineII2.0.rb to the latest version"
-  puts "\n"
+  puts "\n--update\tUpdate adventineII2.0.rb to the latest version"
+  puts "\n--windows\tIndicate you are using Windows rather than *nix"
+  puts "\n" #final ""\n"
   exit(0)
-when "--update"
-  quicktest = (system 'ping -q -c3 github.com >/dev/null')
-  if quicktest == true
-    puts "We're downloading the latest version and placing it in the current directory."
-  else
-    puts "Could not connect to github, check your internet connection?"
-    exit 1
-  end
-  system 'mv adventineII2.0.rb adventineII2.0.rb-OLD'
-  system 'wget -q https://raw.githubusercontent.com/henesy/adventine/master/adventineII2.0.rb'
-  loadwheel()
-  system 'chmod +x adventineII2.0.rb'
-  puts "Update complete!  :)"
-  exit 0
 else
   #puts "#{$hoppington}"
-  puts ":3"
+  ARGV.each do |n|
+    case n
+      when "--update"
+        quicktest = (system 'ping -q -c3 github.com >/dev/null')
+        if quicktest == true
+          puts "We're downloading the latest version and placing it in the current directory."
+        else
+          puts "Could not connect to github, check your internet connection? Are you on Windows?"
+          exit 1
+        end
+        system 'mv adventineII2.0.rb adventineII2.0.rb-OLD'
+        system 'wget -q https://raw.githubusercontent.com/henesy/adventine/master/adventineII2.0.rb'
+        loadwheel()
+        system 'chmod +x adventineII2.0.rb'
+        puts "Update complete!  :)"
+        exit 0
+      when "--windows"
+        $windows=1
+    end
+  end
 end
+#puts "DEBUG Windows:#{$windows}"
 $southcracked=0
 $room = "Cavern"
 $fudged = 0
@@ -123,7 +130,7 @@ $torchlight = false
 $fresh = 0
 $pclass = ""
 $engaged = 0
-
+$choosing = 1 # bugfix variable
 ## -- Zone for Item State Hash (experimental)
 # hash.reject {|key ,value| key == "three" }.each{...}
 # ^from stack overflow, filter out "Nowhere", then each loop through
@@ -220,7 +227,11 @@ def printprofile
 end
 
 def clearscreen
-  system 'clear'
+  if $windows == 1
+    system 'cls'
+  else
+    system 'clear'
+  end
 end
 
 def classprompt
